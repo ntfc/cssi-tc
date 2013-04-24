@@ -87,7 +87,7 @@ public class Affine {
       char mi = abc.charAt(mod((chrIndex - b) * aInv, 26));
       m.append(mi);
     }
-    return m.toString();
+    return m.toString().toUpperCase();
   }
   public static int gcd(int a, int b) {
     return (b == 0) ? a : gcd(b, a%b);
