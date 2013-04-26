@@ -47,12 +47,19 @@ BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_informat
 ##TP04
 
 ##TP05
-- extended_gcd(a, b) == xgcd(a, b) do sage
-- solve_congruences(a, n) == CRT_list(a, n) do sage
-### exercicio 1
-Basta fazer solve_congruences([12,9,23],[25,26,27])
-### exercicio 2
+- `extended_gcd(a, b)` == `xgcd(a, b)` do sage
+- `solve_congruences(a, n)` == `CRT_list(a, n)` do sage
+
+###exercicio 1
+Basta fazer `solve_congruences([12,9,23],[25,26,27])`<br>
+
+###exercicio 2
 Tem-se `13x = 4 <=> x = (4/13) mod(99)`, com `mod(4/13, 99) = 46`<br>
 Faz-se o mesmo para a equacao `15x = 56 (mod 101)`<br>
-No final, chamar solve_congruences([int(mod(4/13, 99)), int(mod(56/15, 101))], [99,101])<br>
+No final, chamar `solve_congruences([int(mod(4/13, 99)), int(mod(56/15, 101))], [99,101])`<br>
 
+###exercicio 3
+
+###exercicio 4
+
+###exercicio 5
