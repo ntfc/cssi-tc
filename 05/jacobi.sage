@@ -205,3 +205,20 @@ def jacobi(m,n):
     return -jacobi(n,m)
   if is_odd(m):
     return jacobi(n,m)
+
+
+
+def eulerPseudoPrime(b,n):
+  j = jacobi(b, n) % n
+  p = pow(b, (n-1)//2) % n
+  if j == p and gcd(b,n) == 1: 
+    print (b,n), "euler pseudoprime"
+    return true
+  else:
+    return false
+
+def eulerBase(n):
+  i = 2
+  while not eulerprime(i,n):
+    i += 1
+  return

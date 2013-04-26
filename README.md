@@ -68,3 +68,8 @@ Para decifrar um texto, fazer `decText(sk, text)`
 As propriedades a e b n‹o tenho a certeza absoluta sobre elas. Usar o jacobi(m,n).
 
 ###exercicio 5
+Encontra-se no jacobi.sage. Chamar eulerBase(n).
+b = 93, n = 837
+b = 850, n = 851
+b = 204, n = 1189
+H‡ mais mas estes s‹o os primeiros a ser encontrados.
