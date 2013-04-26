@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# help function
+usage() {
+  echo "Chamaste mal o script"
+  exit
+}
+
+if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+  usage
+fi
+# bmp file
+FILE="$1"
+# TODO: validate extension and file type
+OUT="$2"
+# cipher
+CIPHER="$3"
+
+# -> note: header size is in position 10 (0x0a) and has 4 bytes of length
+# -> 4 bytes = 8 hex chars
+# od -t x -An: outputs the file as hexadecimal
+# | head -n 1: obtain the first line 
+# | cut -d' ' -f 4,5: 
+# | tr -d ' ': delete the whitespaces
+# | tail -c 15: obtain the last 14 chars (plus the \n char)
+# | cut -c1-8: obtain the first 8 chars
+# note: in little endian format
+HEADERSIZE_LE=$(od -t x -An "$FILE"  | head -n 1 | cut -d' ' -f 4,5 | tr -d ' ' | tail -c 15 | cut -c1-8)
+# convert HEADERSIZE_LE to uppercase (because bc is case sensitive for hex)
+HEADERSIZE_LE="${HEADERSIZE_LE^^}"
+
+# reverse string, to convert to big endian
+HEADERSIZE=""
+for (( i = 0; i < ${#HEADERSIZE_LE}; i+=2 )); do
+  BYTE=${HEADERSIZE_LE:$i:2} # get substring starting in $i with 2 chars
+  HEADERSIZE=$BYTE$HEADERSIZE
+done
+# convert header size to decimal
+HEADERSIZE=$(echo "obase=10; ibase=16; $HEADERSIZE" | bc)
+
+# encrypt image
+openssl enc "$CIPHER" -in "$FILE" -out "$OUT"
+
+# use dd to copy header
+dd if="$FILE" of="$OUT" bs=1 count=$HEADERSIZE conv=notrunc
