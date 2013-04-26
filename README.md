@@ -39,9 +39,11 @@ TODO: nao cifrar o ficheiro todo, cifrar apenas a matriz!
  - openssl enc [cifra com ecb] -in file.bmp -out file-out.bmp
 4. Usar dd para copiar o header do ficheiro original para o file-out.bmp
  - dd if=file.bmp of=file-out.bmp bs=1 count=[header_size] conv=notrunc
---
+
 Meter no relatorio que depende das imagens. Uma foto normal, por exemplo, nao da la mt bem
 BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_information_header.29, man's
 
 ## TP04
+
+##TP05
 
