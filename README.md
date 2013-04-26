@@ -52,6 +52,7 @@ BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_informat
 
 ###exercicio 1
 Basta fazer `solve_congruences([12,9,23],[25,26,27])`<br>
+BIB: um livro qualquer de cripto com o algoritmo do xgcd, e outro com o do CRT
 
 ###exercicio 2
 Tem-se `13x = 4 <=> x = (4/13) mod(99)`, com `mod(4/13, 99) = 46`<br>
@@ -59,6 +60,8 @@ Faz-se o mesmo para a equacao `15x = 56 (mod 101)`<br>
 No final, chamar `solve_congruences([int(mod(4/13, 99)), int(mod(56/15, 101))], [99,101])`<br>
 
 ###exercicio 3
+Como os dois n sao pequenos, e facil factorizar por brute force. Dessa forma, obtem-se a chave privada com o metodo `createKeys(n, e)` que retorna ambas as chaves<br>
+Para decifrar um texto, fazer `decText(sk, text)`
 
 ###exercicio 4
 
