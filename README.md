@@ -32,14 +32,15 @@ BIB: http://www.amazon.com/Elementary-Cryptanalysis-Mathematical-Association-Tex
 |k| = |m| = |c| = 290
 
 ## TP03
-TODO: nao cifrar o ficheiro todo, cifrar apenas a matriz! <br>
+TODO: nao cifrar o ficheiro todo, cifrar apenas a matriz!
+
 1. Abrir imagem em modo hexadecimal
 2. Ver em que posicao comeca o bitmap. Isto serve para determinar o tamanho do header
- - esta na posicao 10 (0xa) e tem 4 bytes
+ * esta na posicao 10 (0xa) e tem 4 bytes
 3. Usar openssl para cifrar uma imagem em formato bmp:
- - openssl enc [cifra com ecb] -in file.bmp -out file-out.bmp
+ * openssl enc [cifra com ecb] -in file.bmp -out file-out.bmp
 4. Usar dd para copiar o header do ficheiro original para o file-out.bmp
- - dd if=file.bmp of=file-out.bmp bs=1 count=[header_size] conv=notrunc
+ * dd if=file.bmp of=file-out.bmp bs=1 count=[header_size] conv=notrunc
 
 Meter no relatorio que depende das imagens. Uma foto normal, por exemplo, nao da la mt bem <br>
 BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_information_header.29, man pages
