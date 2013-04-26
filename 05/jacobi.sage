@@ -177,6 +177,8 @@ def jacobi1(a,n):
          return jacobi1(n,a)
 
 
+
+#confirmar propriedades a e b
 def jacobi(m,n):
   if not is_odd(n):
     print "n not odd"
@@ -189,9 +191,9 @@ def jacobi(m,n):
     return jacobi(m%n, n)
   if m == 2:
     nm8 = n%8
-    if nm8 == 1 or nm8 == -1:
+    if nm8 == 1 or nm8 == 7:
       return 1
-    elif nm8 == 3 or nm8 == -3:
+    elif nm8 == 3 or nm8 == 5:
     #else:
       return -1
   f = list(factor(m))

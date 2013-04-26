@@ -65,5 +65,6 @@ Como os dois n sao pequenos, e facil factorizar por brute force. Dessa forma, ob
 Para decifrar um texto, fazer `decText(sk, text)`
 
 ###exercicio 4
+As propriedades a e b n‹o tenho a certeza absoluta sobre elas. Usar o jacobi(m,n).
 
 ###exercicio 5
