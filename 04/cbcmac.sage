@@ -1,23 +1,20 @@
-from binascii import hexlify
+from binascii import hexlify, unhexlify
+from Crypto.Cipher import AES
 
-class Key:
+class MyKey:
   def __init__(self, length=128):
     self.n = int(length)
-    self.k = intToBin(getrandbits(self.n), self.n)
+    #self.k = intToBin(getrandbits(self.n), self.n)
+    self.k = bin(int(os.urandom(self.n // 8).encode('hex'), 16))[2:].zfill(self.n)
 
 class CBCMAC:
-  def __init__(self, l, k=0):
-    if type(k) == type(Key):
-      self.k = k
-    else:
-      self.k = Key() # default is 128 bits
-    self.n = self.k.n
+  def __init__(self, n=128, l=5):
+    self.n = n
     self.l = l
 
-  # m must be in bit list
-  def Mac(self, m, iv=0):
+  """def Mac(self, m, iv=0):
     if type(m) != str or len(m) != (self.l * self.n):
-      print "len(msg) != l(n)*n. couldnt not mac"
+      print "len(msg) != l(n)*n or type(msg) != str. couldnt not mac"
       return False
     # partition m
     m_ = self.part(m)
@@ -37,9 +34,36 @@ class CBCMAC:
       # TODO: usar aqui um funcao pseudo aleatoria
       #t[i] = bitwiseXor(keyBin, g)
     #return t[self.l()]
-
+  """
+  def Mac(self, key, msg, iv=0):
+    if key.n != self.n:
+      print "wrogn len for key"
+      return False
+    # convert message to binary string
+    binMsg = strToBin(msg)
+    if len(binMsg) != (self.l * self.n):
+      print "message length must be {0}".format((self.l*self.n)//8)
+      return False
+    # init 0 iv
+    if iv == 0:
+      iv = '0' * self.n
+    else:
+      print "using iv different than 0"
+    F = AES.new(binToHex(key.k), AES.MODE_ECB)
+    t = [iv]
+    mi = self.partition(binMsg)
+    print "l = {0}, len(mi) = {1}".format(self.l, len(mi))
+    for i in xrange(1, self.l + 1): # == [1 .. self.l]
+      #print len(t[i-1])
+      xori = bitwiseXor(t[i-1], mi[i-1])
+      # to encrypt, string must be unhexlified
+      ti = hexlify(F.encrypt(unhexlify(binToHex(xori))))
+      t.append(hexToBin(ti).zfill(self.n))
+      #print "t[{0}] = t[{1}] xor mi[{1}]".format(i, i-1)
+    return t[self.l]
+  
   # m must be a bit list
-  def part(self, m):
+  def partition(self, m):
     if len(m) != (self.l * self.n):
       print "len(msg) != l(n)*n. could not partition"
       return False
@@ -50,28 +74,26 @@ class CBCMAC:
       ml.append(m[blockStart : blockEnd])
     return ml
 
-  # m and t must be in bit list
-  def Ver(self, m, t, iv=0):
-    if type(m) != str or len(m) != (self.l * self.n):
-      print "len(msg) != l(n)*n"
+  # tag must be in binary string
+  def Vrfy(self, key, msg, tag, iv=0):
+    msgBin = strToBin(msg)
+    if len(msgBin) != (self.l * self.n):
+      print "message length must be {0}".format((self.l*self.n)//8)
       return False
-    t_2 = self.Mac(m, iv)
-    return t == t_2
+    t_2 = self.Mac(key, msg, iv)
+    return tag == t_2
 
-  # pseudo random function. try to use a block cipher here
-  def F(self, m):
-    return bitwiseXor(self.k.k, m)
+def strToBin(s):
+  # call zfill in the end to get 8 * len(s) length
+  return bin(Integer(hexlify(s), 16))[2:].zfill(8 * len(s))
+
+def binToStr(b):
+  return unhexlify(hex(Integer(b, 2)))
 
 # convert an int to a binary
 # returns a binary string with len = length
-def intToBin(i, length):
-  # convert int to binary: 10101
-  intBin = bin(int(i))[2:]
-  if len(intBin) > length:
-    print "Error: i.nbits() > length"
-    return
-  # add the necessary 0's so that len(result) = length
-  return intBin.zfill(length)
+def intToBin(i, length=128):
+  return bin(Integer(i))[2:].zfill(length)
 
 # converts a binary to int
 def binToInt(i):
@@ -80,17 +102,23 @@ def binToInt(i):
     out = (out << 1) | int(bit)
   return out
 
+def binToHex(b):
+  h = hex(Integer(b, 2))
+  if is_odd(len(h)):
+    h = h.zfill(len(h)+1)
+  return h
+
+# str must already be hexlified
+def hexToBin(h):
+  return bin(int(h,16))[2:]
+  
 # perform bitwise xor on two binary strings
-# string can have different length
+# strings must have different length
 def bitwiseXor(a, b):
   lenA = len(a)
   lenB = len(b)
-  if len(a) >= len(b):
-    diff = lenA - lenB
-    c = a[:diff]
-    c += ''.join(str(e) for e in map(lambda x,y : int(x).__xor__(int(y)), a[diff:], b))
-  else:
-    diff = lenB - lenA
-    c = b[:diff]
-    c += ''.join(str(e) for e in map(lambda x,y : int(x).__xor__(int(y)), a, b[diff:]))
+  if len(a) != len(b):
+    print "XOR error"
+    return
+  c = ''.join(str(e) for e in map(lambda x,y : int(x).__xor__(int(y)), a, b))
   return c
