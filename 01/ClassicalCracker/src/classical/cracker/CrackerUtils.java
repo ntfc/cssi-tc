@@ -114,5 +114,14 @@ public class CrackerUtils {
     return res;
   }
 
+  public static int totalNullBits(String c) {
+    // null bit is 'a'
+    c = c.toLowerCase();
+    int t = 0;
+    for(int i = 0; i < c.length(); i++)
+      if(c.charAt(i) == 'a')
+        t++;
+    return t;
+  }
 
 }
