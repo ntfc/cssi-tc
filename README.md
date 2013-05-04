@@ -32,7 +32,7 @@ BIB: http://www.amazon.com/Elementary-Cryptanalysis-Mathematical-Association-Tex
 |k| = |m| = |c| = 290
 
 ## TP03
-TODO: nao cifrar o ficheiro todo, cifrar apenas a matriz!
+<b>TODO:</b> nao cifrar o ficheiro todo, cifrar apenas a matriz!
 
 1. Abrir imagem em modo hexadecimal
 2. Ver em que posicao comeca o bitmap. Isto serve para determinar o tamanho do header
@@ -46,22 +46,23 @@ Meter no relatorio que depende das imagens. Uma foto normal, por exemplo, nao da
 BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_information_header.29, man pages
 
 ##TP04
-Cria-se uma chave de `n` bits com: `K = MyKey(n)`
+- Cria-se uma chave de `n` bits com: `K = MyKey(n)`
  * para aceder aos `n` bits, fazer `K.k`
-Cria-se um CBC-MAC com `cbcmac = CBCMAC(n, l)`
-Para criar tags, existem 2 versões:
+- Cria-se um CBC-MAC com `cbcmac = CBCMAC(n, l)`
+- Para criar tags, existem 2 versões:
  * Segura: `cbcmac.Mac(K, m, secure=True)`
  * Insegura: `cbcmac.Mac(K, m, iv, secure=False)`
-Para verificar, existem tambem 2 versões:
+- Para verificar, existem tambem 2 versões:
  * Segura: `cbcmac.Vrfy(K, m, tag, secure=True)`
  * Insegura: `cbcmac.Vrfy(K, m, tag, iv, secure=False)`
-Para falsificar MAC fazer o seguinte (usando a versao insegura):
+- Para falsificar MAC fazer o seguinte (usando a versao insegura):
  * m = m_1,..,m_l e t = t_0,..,t_l sao interceptados
  * atacante sabe que t_1 = E_k(m_1), .., t_l = E_k(m_l)
- * atacante constroi m' = (t_1 XOR m_2) || (t2_2XOR m_1) e t' = t_2 || t_1 TODO: este e o caso para l = 2
+ * atacante constroi `m' = (t_1 XOR m_2) || (t2_2XOR m_1)` e `t' = t_2 || t_1` <b>TODO</b>: este e o caso para `l = 2`
  * Vrfy aceita m' e respectiva tag t'
  * m' != m, excepto se m_2 = m_1 XOR E_k(m_1)
- TODO: criar metodo para falsificar MAC
+- <b>TODO:</b> criar metodo para falsificar MAC<br>
+
 ##TP05
 - `extended_gcd(a, b)` == `xgcd(a, b)` do sage
 - `solve_congruences(a, n)` == `CRT_list(a, n)` do sage
