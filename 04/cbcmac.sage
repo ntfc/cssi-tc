@@ -12,30 +12,7 @@ class CBCMAC:
     self.n = n
     self.l = l
 
-  """def Mac(self, m, iv=0):
-    if type(m) != str or len(m) != (self.l * self.n):
-      print "len(msg) != l(n)*n or type(msg) != str. couldnt not mac"
-      return False
-    # partition m
-    m_ = self.part(m)
-    if iv == 0:
-      iv = intToBin(0, self.n)
-    t = [iv]
-
-    for i in xrange(1, self.l + 1):
-      gi = bitwiseXor(t[i-1], m_[i-1])
-      # TODO: ver funcao pseudo aleatoria.....
-      # TODO: usar AES/DES??? https://gist.github.com/HarryR/5017218
-      t.append(self.F(gi))
-
-    return (t[self.l])
-    #for i in range(1, self.l()+1):
-      #g = bitwiseXor(t[i-1], m_[i-1])
-      # TODO: usar aqui um funcao pseudo aleatoria
-      #t[i] = bitwiseXor(keyBin, g)
-    #return t[self.l()]
-  """
-  def Mac(self, key, msg, iv=0):
+  def Mac(self, key, msg, iv=0, secure=True):
     if key.n != self.n:
       print "wrogn len for key"
       return False
@@ -54,13 +31,16 @@ class CBCMAC:
     mi = self.partition(binMsg)
     print "l = {0}, len(mi) = {1}".format(self.l, len(mi))
     for i in xrange(1, self.l + 1): # == [1 .. self.l]
-      #print len(t[i-1])
       xori = bitwiseXor(t[i-1], mi[i-1])
       # to encrypt, string must be unhexlified
-      ti = hexlify(F.encrypt(unhexlify(binToHex(xori))))
-      t.append(hexToBin(ti).zfill(self.n))
-      #print "t[{0}] = t[{1}] xor mi[{1}]".format(i, i-1)
-    return t[self.l]
+      #ti = hexlify(F.encrypt(unhexlify(binToHex(xori))))
+      #t.append(hexToBin(ti).zfill(self.n))
+      t.append(encryptBinToBin(F, xori, self.n))
+    if secure == True:
+      return t[self.l]
+    else:
+      # iv is already returned is t[0]
+      return t
   
   # m must be a bit list
   def partition(self, m):
@@ -75,13 +55,23 @@ class CBCMAC:
     return ml
 
   # tag must be in binary string
-  def Vrfy(self, key, msg, tag, iv=0):
-    msgBin = strToBin(msg)
-    if len(msgBin) != (self.l * self.n):
-      print "message length must be {0}".format((self.l*self.n)//8)
-      return False
-    t_2 = self.Mac(key, msg, iv)
-    return tag == t_2
+  def Vrfy(self, key, msg, tag, iv=0, secure=True):
+    # when secure=True, message must be in string format and tag is the last one
+    if secure == True:
+      msgBin = strToBin(msg)
+      if len(msgBin) != (self.l * self.n):
+        print "message length must be {0}".format((self.l*self.n)//8)
+        return False
+      t_2 = self.Mac(key, msg, iv)
+      return tag == t_2
+    # when secure=False, message and tag must be an array of length l(n)
+    else:
+      if len(tag) != self.l+1:
+        print "Wrong len for tag or message."
+        return
+      t_1 = self.Mac(key, msg, iv, secure=False)
+      
+      return t_1 == tag
 
 def strToBin(s):
   # call zfill in the end to get 8 * len(s) length
@@ -122,3 +112,9 @@ def bitwiseXor(a, b):
     return
   c = ''.join(str(e) for e in map(lambda x,y : int(x).__xor__(int(y)), a, b))
   return c
+
+def randomIV(nbits=128):
+  return bin(Integer(getrandbits(nbits)))[2:].zfill(nbits)
+
+def encryptBinToBin(F, m, n):
+  return hexToBin(hexlify(F.encrypt(unhexlify(binToHex(m))))).zfill(n)
