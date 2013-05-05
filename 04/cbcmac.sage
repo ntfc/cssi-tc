@@ -39,8 +39,8 @@ class CBCMAC:
     if secure == True:
       return t[self.l]
     else:
-      # iv is already returned is t[0]
-      return t
+      # exclud iv from list of tags
+      return t[1:]
   
   # m must be a bit list
   def partition(self, m):
@@ -66,12 +66,27 @@ class CBCMAC:
       return tag == t_2
     # when secure=False, message and tag must be an array of length l(n)
     else:
-      if len(tag) != self.l+1:
+      if len(tag) != self.l:
         print "Wrong len for tag or message."
         return
       t_1 = self.Mac(key, msg, iv, secure=False)
-      
       return t_1 == tag
+      
+  """ m is the message sent and t is a list with all the tags """
+  def Forge(self, m, t):
+    if len(t) != 2:
+      print "WARNING: this doesnt work for len(tag) > 2!"
+    # convert message to binary string
+    binMsg = strToBin(m)
+    # since self.l is public, we are going to partition the message
+    m_part = self.partition(binMsg)
+    # build new forged message and tag
+    newM = []
+    newT = []
+    for i in xrange(0, len(t)):
+      newM.append(bitwiseXor(t[i], m_part[len(t)- i - 1]))
+      newT.append(t[len(t) - i - 1])
+    return (newM, newT)
 
 def strToBin(s):
   # call zfill in the end to get 8 * len(s) length
