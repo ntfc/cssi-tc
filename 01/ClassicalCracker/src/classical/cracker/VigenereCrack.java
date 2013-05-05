@@ -54,6 +54,8 @@ public class VigenereCrack {
     // determine which of the IC's calculated is closest to kappaPlaintext
     // to do that, we compute the squared difference (to remove possible negative values) and we choose the smallest
     // difference = (freqEnglish - IC_calculated)^2
+    // this is the chi-squared statistics, or Friedman attack
+    // ver isto: http://cs.widener.edu/~chiffens/cryptanalysis.html
     double smallest = -1.0;
     int keyLength = minLen;
     for(int i = 0; i < indexes.length; i++) {
