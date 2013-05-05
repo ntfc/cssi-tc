@@ -49,11 +49,11 @@ HEADERSIZE=$(echo "obase=10; ibase=16; $HEADERSIZE" | bc)
 echo "Header size of '"$IFILE"' is "$HEADERSIZE" bytes, located at position 0x0A"
 
 # copy the header to OFILE
-dd if="$IFILE" of="$OFILE" bs=1 count="$HEADERSIZE" conv=notrunc 2> /dev/null
+dd if="$IFILE" of="$OFILE" bs=16 count="$HEADERSIZE" conv=notrunc 2> /dev/null
 
 # encrypt image only
 # encryption adds some bytes to OFILE
 # input to openssl: everything, except the header
 # output of openssl is concat'ed to OFILE
-dd if="$IFILE" bs=1 skip="$HEADERSIZE" conv=notrunc 2> /dev/null | \
+dd if="$IFILE" bs=16 skip="$HEADERSIZE" conv=notrunc 2> /dev/null | \
   openssl enc -e "$CIPHER" >> "$OFILE"
