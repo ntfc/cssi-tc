@@ -20,7 +20,7 @@ def jacobi(m,n):
   #propriedade c)
   f = list(factor(m))
   if len(f) == 2 and f[1][1] == 1 and f[0][0] == 2:
-    return (jacobi(2, n)^3)*jacobi(f[0][1], n)
+    return (jacobi(2, n)^f[0][1])*jacobi(f[0][1], n)
   if m%2 == 0:
     return jacobi(2,n)*jacobi(m//2,n)
   #propriedade d)
