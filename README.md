@@ -32,16 +32,18 @@ BIB: http://www.amazon.com/Elementary-Cryptanalysis-Mathematical-Association-Tex
 |k| = |m| = |c| = 290
 
 ## TP03
-<b>TODO:</b> nao cifrar o ficheiro todo, cifrar apenas a matriz!
-
-1. Abrir imagem em modo hexadecimal
+1. Abrir imagem em modo hexadecimal, com o `od -t x -An "$IFILE"`
 2. Ver em que posicao comeca o bitmap. Isto serve para determinar o tamanho do header
  * esta na posicao 10 (0xa) e tem 4 bytes
-3. Usar openssl para cifrar uma imagem em formato bmp:
- * openssl enc [cifra com ecb] -in file.bmp -out file-out.bmp
-4. Usar dd para copiar o header do ficheiro original para o file-out.bmp
- * dd if=file.bmp of=file-out.bmp bs=1 count=[header_size] conv=notrunc
+ * `comando 1. | head -n1 | cut -d' ' -f4,5 | tr -d ' ' | tail -c15 | cut -c1-8`
+3. Depois de fazer o `reverse` do resultado de `2.`, converter para decimal com o `bc`
+ * `echo "obase=10; ibase=16; $HEADERSIZE" | bc`
+4. Copiar o header da imagem original para o ficheiro de output
+ * `dd if="$IFILE" of="$OFILE" bs=16 count="$HEADERSIZE" conv=notrunc`
+3. Usar openssl para cifrar apenas os restantes bytes da imagem
+ * `dd if="$IFILE" bs=16 skip="$HEADERSIZE" conv=notrunc | openssl enc [cifra com ecb] > "$OFILE"`
 
+Executar script com: `./script infile.bmp outfile.bmp -aes-128-ecb`<br>
 Meter no relatorio que depende das imagens. Uma foto normal, por exemplo, nao da la mt bem <br>
 BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_information_header.29, man pages
 
