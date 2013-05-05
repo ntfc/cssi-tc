@@ -99,7 +99,14 @@ public class OTP {
     //testXors();
     //test1();
     //test3();
-    teste4();
+    //xorTextWithLetters(6,13);
+    System.out.println(enc("ola", "sct"));
+    System.out.println(enc("xau", "sct"));
+    System.out.println(dec("ola", "xau"));
+    System.out.println(dec(enc("ola", "sct"),enc("xau", "sct")));
+    
+    
+    
   }
   
   public static void test1(){
@@ -113,10 +120,11 @@ public class OTP {
     System.out.println(enc1);
     System.out.println(enc2);
     System.out.println(dec);
-    System.out.println(dec(dec,dec));
-    System.out.println(Frequencies.indexOfCoincidence(enc(txt1,txt2)));
-    System.out.println(enc(txt1,txt2));
+    //System.out.println(dec(dec,dec));
+    //System.out.println(Frequencies.indexOfCoincidence(enc(txt1,txt2)));
+    //System.out.println(enc(txt1,txt2));
     
+   
     
     
   }
@@ -229,7 +237,7 @@ public class OTP {
           for(int j=i+1; j<20; j++){
             String c2 = getText(j);
             String cp = dec(c1,c2);
-            String dc = VigenereCrack.getKey(cp, 512, Language.English);
+            String dc = VigenereCrack.getKey(cp, 290, Language.English);
             //System.out.println("c"+i+" xor c"+j+" = "+ dc);
             double f = Frequencies.indexOfCoincidence(dc);
             System.out.println("c"+i+" xor c"+j+" = "+ f);
@@ -242,6 +250,55 @@ public class OTP {
   
   }
   
+  //tentar substituir por the
+  public static void xorTextsWithTrigrams(){
+     for(int i=0; i<20; i++){
+        String c1 = getText(i);
+          for(int j=i+1; j<20; j++){
+            String c2 = getText(j);
+            String cp = dec(c1,c2);
+            int ct = 0;
+            for(int v = 0; v<cp.length();v++){
+              if(v+3 < cp.length()){
+                StringBuilder sb = new StringBuilder();
+                sb.append(cp.toCharArray(), v, 3);
+                String temp = sb.toString();
+                String r = dec(temp, "the");
+                if(Frequencies.freqEnglishTrigrams.containsKey(r.toLowerCase())) ct++;
+              }
+            }
+            System.out.println("c"+i+" xor c"+j+" = "+ct);
+          }
+     }
+
+}
+  
+  public static void xorTextWithLetters(int c, int c0){
+    String c1 = getText(c);
+    String c2 = getText(c0);
+    String cp = dec(c1,c2);
+    System.out.println(cp);
+    int ct=0;
+    for(int v = 0; v<cp.length();v++){
+       if(v+3 < cp.length()){
+          StringBuilder sb = new StringBuilder();
+          sb.append(cp.toCharArray(), v, 3);
+          String temp = sb.toString();
+          String r = dec(temp, "the");
+          if(Frequencies.freqEnglishTrigrams.containsKey(r.toLowerCase())){
+            ct++;
+            System.out.println(r);
+            StringBuilder sb1 = new StringBuilder();
+            sb1.append(cp.toCharArray(), 0, v);
+            sb1.append(r);
+            sb1.append(cp.toCharArray(), v+3, cp.length()-(v+3));
+            cp = sb1.toString();
+          }
+        }
+    }
+    System.out.println(cp);
+  
+  }
   
 
   
