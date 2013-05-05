@@ -117,7 +117,7 @@ public class Frequencies {
     freqEnglishBigrams.put("ng", 0.01053);
   }
   ;
-
+*/
  public static final Map<String, Double> freqEnglishTrigrams;
 
   static {
@@ -144,7 +144,35 @@ public class Frequencies {
     freqEnglishTrigrams.put("tio", 0.00378);
   }
   ;
+  
+  
+  public static final Map<String, Double> freqEnglishQuadrigrams;
 
+  static {
+    freqEnglishQuadrigrams = new TreeMap<String, Double>();
+    freqEnglishQuadrigrams.put("that", 0.00761242);
+    freqEnglishQuadrigrams.put("ther", 0.00604501);
+    freqEnglishQuadrigrams.put("with", 0.00573866);
+    freqEnglishQuadrigrams.put("tion", 0.00551919);
+    freqEnglishQuadrigrams.put("here", 0.00374549);
+    freqEnglishQuadrigrams.put("ould", 0.00369920);
+    freqEnglishQuadrigrams.put("ight", 0.00309440);
+    freqEnglishQuadrigrams.put("have", 0.00290544);
+    freqEnglishQuadrigrams.put("hich", 0.00284292);
+    freqEnglishQuadrigrams.put("wihc", 0.00283826);
+    freqEnglishQuadrigrams.put("this", 0.00276333);
+    freqEnglishQuadrigrams.put("thin", 0.00270413);
+    freqEnglishQuadrigrams.put("they", 0.00262421);
+    freqEnglishQuadrigrams.put("atio", 0.00262386);
+    freqEnglishQuadrigrams.put("ever", 0.00260695);
+    freqEnglishQuadrigrams.put("from", 0.00258580);
+    freqEnglishQuadrigrams.put("ough", 0.00253447);
+    freqEnglishQuadrigrams.put("were", 0.00231089);
+    freqEnglishQuadrigrams.put("hing", 0.00229944);
+    freqEnglishQuadrigrams.put("ment", 0.00223347);
+  }
+  ;
+/*
   public static final List<String> engRepLetters;
 
   static {
