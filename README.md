@@ -2,9 +2,9 @@
 If the Index of Coincidence is around 0.06 we conclude the cipher is probably a substitution cipher
  -> usar isto para fazer um cracker mais inteligente
 
-* 4 textos, 1º, 2º e 4º em inglês, 3º em francês
-* 2º e 4º são Vigenere
-* 1º e 3º serão monoalfabetico ou affine
+* 4 textos, 1o, 2o e 4o em ingles, 3o em frances
+* 2o e 4o sao Vigenere
+* 1o e 3o serao monoalfabetico ou affine
 
 http://cs.colgate.edu/~chris/FSemWeb/hw/lab1.html
 
@@ -32,20 +32,38 @@ BIB: http://www.amazon.com/Elementary-Cryptanalysis-Mathematical-Association-Tex
 |k| = |m| = |c| = 290
 
 ## TP03
-TODO: nao cifrar o ficheiro todo, cifrar apenas a matriz!
-
-1. Abrir imagem em modo hexadecimal
+1. Abrir imagem em modo hexadecimal, com o `od -t x -An "$IFILE"`
 2. Ver em que posicao comeca o bitmap. Isto serve para determinar o tamanho do header
  * esta na posicao 10 (0xa) e tem 4 bytes
-3. Usar openssl para cifrar uma imagem em formato bmp:
- * openssl enc [cifra com ecb] -in file.bmp -out file-out.bmp
-4. Usar dd para copiar o header do ficheiro original para o file-out.bmp
- * dd if=file.bmp of=file-out.bmp bs=1 count=[header_size] conv=notrunc
+ * `comando 1. | head -n1 | cut -d' ' -f4,5 | tr -d ' ' | tail -c15 | cut -c1-8`
+3. Depois de fazer o `reverse` do resultado de `2.`, converter para decimal com o `bc`
+ * `echo "obase=10; ibase=16; $HEADERSIZE" | bc`
+4. Copiar o header da imagem original para o ficheiro de output
+ * `dd if="$IFILE" of="$OFILE" bs=16 count="$HEADERSIZE" conv=notrunc`
+3. Usar openssl para cifrar apenas os restantes bytes da imagem
+ * `dd if="$IFILE" bs=16 skip="$HEADERSIZE" conv=notrunc | openssl enc [cifra com ecb] > "$OFILE"`
 
+Executar script com: `./script infile.bmp outfile.bmp -aes-128-ecb`<br>
 Meter no relatorio que depende das imagens. Uma foto normal, por exemplo, nao da la mt bem <br>
 BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_information_header.29, man pages
 
 ##TP04
+- Cria-se uma chave de `n` bits com: `K = MyKey(n)`
+ * para aceder aos `n` bits, fazer `K.k`
+- Cria-se um CBC-MAC com `cbcmac = CBCMAC(n, l)`
+- Para criar tags, existem 2 versões:
+ * Segura: `cbcmac.Mac(K, m, secure=True)`
+ * Insegura: `cbcmac.Mac(K, m, iv, secure=False)`
+- Para verificar, existem tambem 2 versões:
+ * Segura: `cbcmac.Vrfy(K, m, tag, secure=True)`
+ * Insegura: `cbcmac.Vrfy(K, m, tag, iv, secure=False)`
+- Para falsificar MAC fazer o seguinte (usando a versao insegura):
+ * `m = m_1,..,m_l` e `t = t_0,..,t_l` sao interceptados
+ * atacante sabe que `t_1 = E_k(m_1), .., t_l = E_k(m_l)`
+ * atacante constroi `m' = (t_1 XOR m_2) || (t2_2XOR m_1)` e `t' = t_2 || t_1` <b>TODO</b>: este e o caso para `l = 2`
+ * Vrfy aceita m' e respectiva tag t'
+ * m' != m, excepto se m_2 = m_1 XOR E_k(m_1)
+- <b>TODO:</b> criar metodo para falsificar MAC<br>
 
 ##TP05
 - `extended_gcd(a, b)` == `xgcd(a, b)` do sage
@@ -65,11 +83,11 @@ Como os dois n sao pequenos, e facil factorizar por brute force. Dessa forma, ob
 Para decifrar um texto, fazer `decText(sk, text)`
 
 ###exercicio 4
-As propriedades a e b n�o tenho a certeza absoluta sobre elas. Usar o jacobi(m,n).
+As propriedades a e b nao tenho a certeza absoluta sobre elas. Usar o jacobi(m,n).
 
 ###exercicio 5
-Encontra-se no jacobi.sage. Chamar eulerBase(n).
-b = 93, n = 837
-b = 850, n = 851
-b = 204, n = 1189
-H� mais mas estes s�o os primeiros a ser encontrados.
+Encontra-se no jacobi.sage. Chamar eulerBase(n).<br>
+b = 93, n = 837<br>
+b = 850, n = 851<br>
+b = 204, n = 1189<br>
+Ha mais mas estes sao os primeiros a ser encontrados.
