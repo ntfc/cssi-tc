@@ -80,7 +80,8 @@ No final, chamar `solve_congruences([int(mod(4/13, 99)), int(mod(56/15, 101))], 
 
 ###exercicio 3
 Como os dois n sao pequenos, e facil factorizar por brute force. Dessa forma, obtem-se a chave privada com o metodo `createKeys(n, e)` que retorna ambas as chaves<br>
-Para decifrar um texto, fazer `decText(sk, text)`
+Para decifrar um texto, fazer `decText(sk, text)`<br>
+<b>TODO:</b> arranjar uma forma mais inteligente de factorizar `n`
 
 ###exercicio 4
 As propriedades a e b nao tenho a certeza absoluta sobre elas. Usar o jacobi(m,n).
