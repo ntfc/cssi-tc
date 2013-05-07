@@ -1,4 +1,3 @@
-#confirmar propriedades a e b
 def jacobi(m,n):
   if not is_odd(n):
     print "n not odd"
@@ -8,14 +7,14 @@ def jacobi(m,n):
   if m == 1:
     return 1
   #propriedade a)
-  if m >= n:
+  if m>=n:
     return jacobi(m%n, n)
   #propriedade b)
   if m == 2:
     nm8 = n%8
-    if nm8 == 1 or nm8 == 7:
+    if nm8 == 1.mod(8) or nm8 == (-1).mod(8):
       return 1
-    elif nm8 == 3 or nm8 == 5:
+    elif nm8 == 3.mod(8) or nm8 == (-3).mod(8):
       return -1
   #propriedade c)
   f = list(factor(m))
@@ -24,7 +23,7 @@ def jacobi(m,n):
   if m%2 == 0:
     return jacobi(2,n)*jacobi(m//2,n)
   #propriedade d)
-  if m%4 ==3 and n%4 == 3 and is_odd(m):
+  if m%4 == 3 and n%4 == 3 and is_odd(m):
     return -jacobi(n,m)
   if is_odd(m):
     return jacobi(n,m)
@@ -41,7 +40,7 @@ def eulerPseudoPrime(b,n):
     return false
 
 def eulerBase(n):
-  i = 0
+  i = 2
   ct = 0
   while ct <= 5:
     if eulerPseudoPrime(i,n):

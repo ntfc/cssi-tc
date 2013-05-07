@@ -98,12 +98,9 @@ public class OTP {
     */
     //testXors();
     //test1();
-    //test3();
+    testChiSquaredStatistic();
     //xorTextWithLetters(6,13);
-    System.out.println(enc("ola", "sct"));
-    System.out.println(enc("xau", "sct"));
-    System.out.println(dec("ola", "xau"));
-    System.out.println(dec(enc("ola", "sct"),enc("xau", "sct")));
+   
     
     
     
@@ -230,24 +227,37 @@ public class OTP {
   
   }
   
-  public static void teste4(){
+  public static void testIofC(){
     double max = 0.0;  
     for(int i=0; i<20; i++){
         String c1 = getText(i);
           for(int j=i+1; j<20; j++){
             String c2 = getText(j);
             String cp = dec(c1,c2);
-            String dc = VigenereCrack.getKey(cp, 290, Language.English);
-            //System.out.println("c"+i+" xor c"+j+" = "+ dc);
-            double f = Frequencies.indexOfCoincidence(dc);
+            double f = Frequencies.indexOfCoincidence(cp);
             System.out.println("c"+i+" xor c"+j+" = "+ f);
             if(f > max)
             max = f;
           }
       }
     System.out.println("max: "+ max);
-    
+  }
   
+  
+  public static void testChiSquaredStatistic(){
+    double max = 0.0;  
+    for(int i=0; i<20; i++){
+        String c1 = getText(i);
+          for(int j=i+1; j<20; j++){
+            String c2 = getText(j);
+            String cp = dec(c1,c2);
+            double f = Frequencies.chiSquaredStatistic(cp, Language.English);
+            System.out.println("c"+i+" xor c"+j+" = "+ f);
+            if(f > max)
+            max = f;
+          }
+      }
+    System.out.println("max: "+ max);
   }
   
   //tentar substituir por the

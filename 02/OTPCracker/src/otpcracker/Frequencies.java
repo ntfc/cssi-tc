@@ -17,11 +17,28 @@ import java.util.TreeMap;
  * @author nc
  */
 public class Frequencies {
+  
+  public static String abc = "abcdefghijklmnopqrstuvwxyz";
 
   /**
    * Creates a new empty instance of <code>Frequencies</code>.
    */
   public Frequencies() {
+  }
+
+  
+  
+   // calculate the chi squared statistic method
+  // see formula here: http://practicalcryptography.com/cryptanalysis/text-characterisation/chi-squared-statistic/
+  public static double chiSquaredStatistic(String c, Language lang) {
+    int[] fi = Frequencies.lettersFrequency(c);
+    double chi = 0.0;
+    for(char ch  : abc.toCharArray()) {
+      double ei = (double)c.length() * lang.frequencies()[abc.indexOf(ch)];
+      double ci = fi[abc.indexOf(ch)];
+      chi += Math.pow(ci - ei, 2.0) / (double)ei;
+    }
+    return chi;
   }
 
   /**
