@@ -8,16 +8,17 @@ def createKeys(n, e):
   p = pq[0]
   q = pq[1]
   phi = (p-1)*(q-1)
-  # inverse d
+  # inverse d #TODO: vale a pena implementar o nosso proprio inverse_mod?
   d = Integer(e).inverse_mod(phi)
   # return (pk, sk)
   return ((n,e), (n,d))
 
-# TODO: optimize
+# TODO: optimize. talvez com isto: https://en.wikipedia.org/wiki/Sieve_of_Eratosthenes
+# TODO: vale a penar criar uma funcao nossa para testar se e primo?
 def factorN(n):
   for i in range(5, 500):
     for j in range(5, 500):
-      if i*j == n:
+      if i*j == n and is_prime(i) and is_prime(j):
         return (i,j)
   return -1
 
