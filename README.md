@@ -28,8 +28,9 @@ Mais metodos que se podem usar aqui: http://practicalcryptography.com/cryptanaly
 BIB: http://www.amazon.com/Elementary-Cryptanalysis-Mathematical-Association-Textbooks/dp/0883856220
 
 ## TP02
-20 criptogramas, 19 chaves
-|k| = |m| = |c| = 290
+20 criptogramas, 19 chaves, 2 textos limpos<br>
+|k| = |m| = |c| = 290<br>
+Fazer XOR de dois criptogramas, e detectar se a distribuição é uniforme
 
 ## TP03
 1. Abrir imagem em modo hexadecimal, com o `od -t x -An "$IFILE"`
