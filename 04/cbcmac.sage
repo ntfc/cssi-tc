@@ -25,22 +25,17 @@ class CBCMAC:
     if iv == 0:
       iv = '0' * self.n
     else:
-      print "using iv different than 0"
+      print "INFO: using iv different than 0"
     F = AES.new(binToHex(key.k), AES.MODE_ECB)
     t = [iv]
     mi = self.partition(binMsg)
-    print "l = {0}, len(mi) = {1}".format(self.l, len(mi))
     for i in xrange(1, self.l + 1): # == [1 .. self.l]
       xori = bitwiseXor(t[i-1], mi[i-1])
-      # to encrypt, string must be unhexlified
-      #ti = hexlify(F.encrypt(unhexlify(binToHex(xori))))
-      #t.append(hexToBin(ti).zfill(self.n))
       t.append(encryptBinToBin(F, xori, self.n))
     if secure == True:
-      return t[self.l]
+      return (iv, t[self.l])
     else:
-      # exclud iv from list of tags
-      return t[1:]
+      return (iv, t[1:])
   
   # m must be a bit list
   def partition(self, m):
@@ -62,20 +57,20 @@ class CBCMAC:
       if len(msgBin) != (self.l * self.n):
         print "message length must be {0}".format((self.l*self.n)//8)
         return False
-      t_2 = self.Mac(key, msg, iv)
+      (iv_2, t_2) = self.Mac(key, msg, iv)
       return tag == t_2
     # when secure=False, message and tag must be an array of length l(n)
     else:
       if len(tag) != self.l:
         print "Wrong len for tag or message."
         return
-      t_1 = self.Mac(key, msg, iv, secure=False)
+      (iv_1, t_1) = self.Mac(key, msg, iv, secure)
       return t_1 == tag
       
   """ m is the message sent and t is a list with all the tags """
   def Forge(self, m, t):
     if len(t) != 2:
-      print "WARNING: this doesnt work for len(tag) > 2!"
+      print "WARNING: this doesnt work for len(tag) > 2 yet!"
     # convert message to binary string
     binMsg = strToBin(m)
     # since self.l is public, we are going to partition the message
