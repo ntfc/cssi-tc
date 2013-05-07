@@ -98,12 +98,9 @@ public class OTP {
     */
     //testXors();
     //test1();
-    //test3();
+    test3();
     //xorTextWithLetters(6,13);
-    System.out.println(enc("ola", "sct"));
-    System.out.println(enc("xau", "sct"));
-    System.out.println(dec("ola", "xau"));
-    System.out.println(dec(enc("ola", "sct"),enc("xau", "sct")));
+   
     
     
     
