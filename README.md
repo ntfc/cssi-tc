@@ -58,12 +58,16 @@ BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_informat
 - Para verificar, existem tambem 2 versões:
  * Segura: `cbcmac.Vrfy(K, m, tag, secure=True)`
  * Insegura: `cbcmac.Vrfy(K, m, tag, iv, secure=False)`
-- Para falsificar MAC fazer o seguinte (usando a versao insegura):
+- Para falsificar MACs (quando se retornam todas as tags) fazer o seguinte (usando a versao insegura):
  * `m = m_1,..,m_l` e `t = t_0,..,t_l` sao interceptados
  * atacante sabe que `t_1 = E_k(m_1), .., t_l = E_k(m_l)`
  * atacante constroi `m' = (t_1 XOR m_2) || (t2_2XOR m_1)` e `t' = t_2 || t_1` <b>TODO</b>: este e o caso para `l = 2`
  * Vrfy aceita m' e respectiva tag t'
  * m' != m, excepto se m_2 = m_1 XOR E_k(m_1)
+- Para falsificar MACs quando se usa um IV aleatório fazer:
+ * Usar método `Mac` com um IV aleatório
+ * Fazer XOR do primeiro bloco da mensagem com o IV aleatório, e reconstruir nova mensagem
+ * Usar método `Vrfy` com a mensagem falsificado e com IV=0
 - <b>TODO:</b> criar metodo para falsificar MAC<br>
 
 ##TP05
