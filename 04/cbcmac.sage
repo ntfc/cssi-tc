@@ -51,21 +51,20 @@ class CBCMAC:
 
   # tag must be in binary string
   def Vrfy(self, key, msg, tag, iv=0, secure=True):
-    # when secure=True, message must be in string format and tag is the last one
     if secure == True:
       msgBin = strToBin(msg)
+      # when secure=True, message must be in string format and tag is the last one
       if len(msgBin) != (self.l * self.n):
         print "message length must be {0}".format((self.l*self.n)//8)
         return False
-      (iv_2, t_2) = self.Mac(key, msg, iv)
-      return tag == t_2
-    # when secure=False, message and tag must be an array of length l(n)
     else:
+      # when secure=False, message and tag must be an array of length l(n)
       if len(tag) != self.l:
         print "Wrong len for tag or message."
-        return
-      (iv_1, t_1) = self.Mac(key, msg, iv, secure)
-      return t_1 == tag
+        return False
+      
+    (iv_2, t_2) = self.Mac(key, msg, iv, secure)
+    return tag == t_2
       
   """ m is the message sent and t is a list with all the tags """
   def Forge(self, m, t):
