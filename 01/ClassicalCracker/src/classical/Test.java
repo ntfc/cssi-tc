@@ -57,7 +57,7 @@ public class Test {
 
     // texto 2
     System.out.println("IC texto2 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT2)));
-    int lenKey2 = VigenereCrack.guessKeyLength(Texts.TEXT2, 3, 7, Language.English);
+    int lenKey2 = VigenereCrack.guessKeyLength(Texts.TEXT2, 4, 7, Language.English);
     String key2 = VigenereCrack.getKey(Texts.TEXT2, lenKey2, Language.English);
     
     // texto 3
@@ -66,14 +66,14 @@ public class Test {
 
     // texto 4
     System.out.println("IC texto4 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT4)));
-    int lenKey4 = VigenereCrack.guessKeyLength(Texts.TEXT4, 3, 7, Language.English);
+    int lenKey4 = VigenereCrack.guessKeyLength(Texts.TEXT4, 4, 7, Language.English);
     String key4 = VigenereCrack.getKey(Texts.TEXT4, lenKey4, Language.English);
 
 
     //System.out.println("texto1 = " + Affine.dec(key1[0], key1[1], Texts.TEXT1));
-    System.out.println("texto2 = " + Vigenere.dec(key2, Texts.TEXT2));
-    System.out.println("texto3 = " + Affine.dec(key3[0], key3[1], Texts.TEXT3));
-    System.out.println("texto4 = " + Vigenere.dec(key4, Texts.TEXT4));
+    System.out.println("chave2 = " + key2 + ", texto2 = " + Vigenere.dec(key2, Texts.TEXT2));
+    System.out.println("chave3 = " + Arrays.toString(key3) + ", texto3 = " + Affine.dec(key3[0], key3[1], Texts.TEXT3));
+    System.out.println("chave4 = " + key4 + ", texto4 = " + Vigenere.dec(key4, Texts.TEXT4));
   }
 
 }
