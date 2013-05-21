@@ -97,3 +97,8 @@ b = 93, n = 837<br>
 b = 850, n = 851<br>
 b = 204, n = 1189<br>
 Ha mais mas estes sao os primeiros a ser encontrados.
+
+##TP05
+- Bastante parecido com o exercício do RSA do exercício anterior
+- Basta implementar a função `Dec` do ElGamal e outra para descodificar um número para um triplo de letras
+- Chamar `decText(sk, p, g, text)` para obter texto limpo
