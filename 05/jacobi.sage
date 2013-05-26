@@ -2,6 +2,7 @@ def jacobi(m,n):
   if not is_odd(n):
     print "n not odd"
     return
+  # onde e que esta esta regra no enunciado?
   if m == 0:
   #if mod(m,n) == 0:
     return 0
