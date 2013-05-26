@@ -2,8 +2,8 @@ def jacobi(m,n):
   if not is_odd(n):
     print "n not odd"
     return
-  #if m == 0:
-  if mod(m,n) == 0:
+  if m == 0:
+  #if mod(m,n) == 0:
     return 0
   if m == 1:
     return 1
@@ -39,7 +39,6 @@ def jacobi(m,n):
   #  return -jacobi(n,m)
   #if is_odd(m):
   #  return jacobi(n,m)
-
 
 def eulerPseudoPrime(b,n):
   j = jacobi(b, n) % n
