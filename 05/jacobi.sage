@@ -2,7 +2,8 @@ def jacobi(m,n):
   if not is_odd(n):
     print "n not odd"
     return
-  if m == 0:
+  #if m == 0:
+  if mod(m,n) == 0:
     return 0
   if m == 1:
     return 1
@@ -11,23 +12,33 @@ def jacobi(m,n):
     return jacobi(m%n, n)
   #propriedade b)
   if m == 2:
-    nm8 = n%8
-    if nm8 == 1.mod(8) or nm8 == (-1).mod(8):
+    # n = -+ 1 (mod 8) <=> [1,7]
+    # n = -+ 3 (mod 8) <=> [3,5]
+    if mod(n,8) in [1,7]:
       return 1
-    elif nm8 == 3.mod(8) or nm8 == (-3).mod(8):
+    elif mod(n,8) in [3,5]:
       return -1
   #propriedade c)
   f = list(factor(m))
-  if len(f) == 2 and f[1][1] == 1 and f[0][0] == 2:
-    return ((jacobi(2, n)**f[0][1]))*jacobi(f[0][1], n)
+  if len(f) == 2:
+    if f[1][1] == 1 and f[0][0] == 2:
+      k = f[0][1]
+      t = f[1][0]
+      return (jacobi(2, n)**k * jacobi(t, n))
+    #else: isto e preciso?
+    #  return jacobi(f[0][0], n) * jacobi(t, n)
   if m%2 == 0:
     return jacobi(2,n)*jacobi(m//2,n)
   #propriedade d)
-  if m%4 == 3 and n%4 == 3 and is_odd(m):
-    return -jacobi(n,m)
-  if is_odd(m):
-    return jacobi(n,m)
-
+  if is_odd(m): # and is_odd(n):
+    if mod(m,4) == mod(n,4) == 3:
+      return -jacobi(n,m)
+    else:
+      return jacobi(n,m)
+  #if m%4 == 3 and n%4 == 3 and is_odd(m):
+  #  return -jacobi(n,m)
+  #if is_odd(m):
+  #  return jacobi(n,m)
 
 
 def eulerPseudoPrime(b,n):
@@ -47,3 +58,7 @@ def eulerBase(n):
       ct += 1  
     i += 1
   return
+
+jacobi1 = [610, 987]
+jacobi2 = [20694, 1987]
+jacobi3 = [1234567, 11111111]
