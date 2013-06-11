@@ -63,7 +63,9 @@ public class Test {
     // texto 3
     System.out.println("IC texto3 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT3)));
     int[] key3 = AffineCrack.bruteForceChiSquared(Texts.TEXT3, Language.French);
-
+    String tt = "frpvnautamycdinhhxrqmefniidamtalycdiqtjdunvyrqhruycdfdnqyxrycrphnamnamyctqyddatanhvdamtalrqmdqyrycdycqddsdyydqnvqrafjruycthvrpqhdtasrxdqvnhdsdyydqh";
+    int[] test = AffineCrack.bruteForceChiSquared(tt, Language.English);
+    System.out.println(Affine.dec(test[0], test[1], tt).toLowerCase());
     // texto 4
     System.out.println("IC texto4 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT4)));
     int lenKey4 = VigenereCrack.guessKeyLength(Texts.TEXT4, 4, 7, Language.English);

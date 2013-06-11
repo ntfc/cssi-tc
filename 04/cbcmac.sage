@@ -1,129 +1,134 @@
-from binascii import hexlify, unhexlify
 from Crypto.Cipher import AES
 
 class MyKey:
   def __init__(self, length=128):
+    # n is in bits!
     self.n = int(length)
-    #self.k = intToBin(getrandbits(self.n), self.n)
-    self.k = bin(int(os.urandom(self.n // 8).encode('hex'), 16))[2:].zfill(self.n)
+    self.k = os.urandom(self.n // 8).encode('hex')
 
 class CBCMAC:
   def __init__(self, n=128, l=5):
-    self.n = n
-    self.l = l
+    if n < 128:
+      print "Length ERROR"
+    # n is in bits
+    self.n = n # block length
+    self.l = l # number of blocks
+    self.block_len = self.n // 8 # iv length
+    self.str_len = (self.n * self.l) // 8 # message length
 
+  # msg: message must be in str
+  # iv: must be in str format
   def Mac(self, key, msg, iv=0, secure=True):
     if key.n != self.n:
-      print "wrogn len for key"
+      print "Wrong len for key (should be {0} bits)".format(self.n)
       return False
-    # convert message to binary string
-    binMsg = strToBin(msg)
-    if len(binMsg) != (self.l * self.n):
-      print "message length must be {0}".format((self.l*self.n)//8)
+    if type(msg) != str or len(msg) != self.str_len:
+      print "Message must be a str with {0} characters".format(self.str_len)
       return False
-    # init 0 iv
     if iv == 0:
-      iv = '0' * self.n
+      iv = '\x00' * self.block_len
     else:
-      print "INFO: using iv different than 0"
-    F = AES.new(binToHex(key.k), AES.MODE_ECB)
+      if type(iv) != str or len(iv) != self.block_len:
+        print "IV must be a str with {0} characters".format(self.block_len)
+        return False
+    F = AES.new(key.k, AES.MODE_ECB)
+    
     t = [iv]
-    mi = self.partition(binMsg)
-    for i in xrange(1, self.l + 1): # == [1 .. self.l]
-      xori = bitwiseXor(t[i-1], mi[i-1])
-      t.append(encryptBinToBin(F, xori, self.n))
+    mi = self.partition(msg)
+    
+    if mi == False:
+      print "An error ocorred while partitioning"
+      return False
+    for i in xrange(1, self.l + 1): # i in [1 .. self.l]
+      xor_i = strXor(t[i - 1], mi[i - 1])
+      t.append(F.encrypt(xor_i))
+    
     if secure == True:
-      return (iv, t[self.l])
+      return t[self.l]
     else:
       return (iv, t[1:])
-  
-  # m must be a bit list
-  def partition(self, m):
-    if len(m) != (self.l * self.n):
-      print "len(msg) != l(n)*n. could not partition"
+    
+  def partition(self, msg):
+    if type(msg) != str or len(msg) != self.str_len:
+      print "Message must be a str with {0} characters".format(self.str_len)
       return False
+
     ml = []
-    for i in range(0, self.l):
-      blockStart = i * self.n
-      blockEnd = blockStart + self.n
-      ml.append(m[blockStart : blockEnd])
+    for i in xrange(0, self.l):
+      start = i * self.block_len
+      end = start + self.block_len
+      ml.append(msg[start : end])
     return ml
 
   # tag must be in binary string
   def Vrfy(self, key, msg, tag, iv=0, secure=True):
+    if key.n != self.n:
+      print "Wrong len for key (should be {0} bits)".format(self.n)
+      return False
+    if type(msg) != str or len(msg) != self.str_len:
+      print "Message must be a str with {0} characters".format(self.str_len)
+      return False
+    if iv == 0:
+      iv = '\x00' * self.block_len
+    else:
+      # validate IV
+      if type(iv) != str or len(iv) != self.block_len:
+        print "IV must be a str with {0} characters".format(self.block_len)
+        return False
+
     if secure == True:
-      msgBin = strToBin(msg)
-      # when secure=True, message must be in string format and tag is the last one
-      if len(msgBin) != (self.l * self.n):
-        print "message length must be {0}".format((self.l*self.n)//8)
+      # validate tag
+      if type(tag) != str and len(tag) != self.block_len:
+        print "Tag must be a str with {0} characters".format(self.block_len)
         return False
     else:
-      # when secure=False, message and tag must be an array of length l(n)
-      if len(tag) != self.l:
-        print "Wrong len for tag or message."
+      # when secure=False, tag must be an array with self.l blocks
+      if type(tag) != list and len(tag) != self.l and len(''.join(tag)) != (self.str_len):
+        print "Tag must be a list with {0} blocks, each with {1} characters".format(self.l, self.str_len)
         return False
       
-    (iv_2, t_2) = self.Mac(key, msg, iv, secure)
-    return tag == t_2
-      
-  """ m is the message sent and t is a list with all the tags """
-  def Forge(self, m, t):
-    if len(t) != 2:
-      print "WARNING: this doesnt work for len(tag) > 2 yet!"
-    # convert message to binary string
-    binMsg = strToBin(m)
-    # since self.l is public, we are going to partition the message
-    m_part = self.partition(binMsg)
-    # build new forged message and tag
-    newM = []
-    newT = []
-    for i in xrange(0, len(t)):
-      newM.append(bitwiseXor(t[i], m_part[len(t)- i - 1]))
-      newT.append(t[len(t) - i - 1])
-    return (newM, newT)
 
-def strToBin(s):
-  # call zfill in the end to get 8 * len(s) length
-  return bin(Integer(hexlify(s), 16))[2:].zfill(8 * len(s))
+    tag2 = self.Mac(key, msg, iv, secure)
+    if secure == True:
+      return tag == tag2
+    else:
+      return tag == tag2[1]
+      
+  # creates the new fake message and fake tag
+  # m: original message (in str form)
+  # t: list of all tags (in binary form)
+  # TODO: receive msg and tag in hex
+  def CreateFakeMsgMac(self, m, t):
+    if len(m) != len(''.join(t)):
+      print "Length of message must be the same as the length of all tags"
+      return
+    if len(m) != (self.n * self.l):
+      print "Length of message must be of {0} bits ({1} chars)".format(self.n * self.l, (self.n * self.l) / 8)
+      return
 
 def binToStr(b):
-  return unhexlify(hex(Integer(b, 2)))
-
-# convert an int to a binary
-# returns a binary string with len = length
-def intToBin(i, length=128):
-  return bin(Integer(i))[2:].zfill(length)
-
-# converts a binary to int
-def binToInt(i):
-  out = 0
-  for bit in i:
-    out = (out << 1) | int(bit)
-  return out
-
-def binToHex(b):
   h = hex(Integer(b, 2))
   if is_odd(len(h)):
-    h = h.zfill(len(h)+1)
-  return h
+    h = h.zfill(len(h) + 1)
+  return unhexlify(h)
 
-# str must already be hexlified
-def hexToBin(h):
-  return bin(int(h,16))[2:]
-  
 # perform bitwise xor on two binary strings
 # strings must have different length
 def bitwiseXor(a, b):
   lenA = len(a)
   lenB = len(b)
   if len(a) != len(b):
-    print "XOR error"
+    print "Cant xor |a| = {0} with |b| = {1}".format(len(a), len(b))
     return
   c = ''.join(str(e) for e in map(lambda x,y : int(x).__xor__(int(y)), a, b))
   return c
 
-def randomIV(nbits=128):
-  return bin(Integer(getrandbits(nbits)))[2:].zfill(nbits)
+# n: block length
+def strXor(a, b):
+  return ''.join(chr(ord(a).__xor__(ord(b))) for a,b in zip(a, b))
 
-def encryptBinToBin(F, m, n):
-  return hexToBin(hexlify(F.encrypt(unhexlify(binToHex(m))))).zfill(n)
+def randomIV(nbits=128):
+  iv = hex(Integer(getrandbits(nbits)))
+  if is_odd(len(iv)):
+    iv = iv.zfill(len(iv) + 1)
+  return iv.decode('hex')
