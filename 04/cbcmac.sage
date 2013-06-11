@@ -98,9 +98,6 @@ class CBCMAC:
   # creates the new fake message and fake tag, when all tags are returned
   # m: original message (in str form)
   # t: str of all tags
-  """
-  TODO: does this works for random IV's?
-  """
   def ForgeMac(self, m, t):
     if len(m) != len(t):
       print "FORGE: Length of message must be the same as the length of all tags"
@@ -108,13 +105,6 @@ class CBCMAC:
     if len(m) != self.str_len:
       print "FORGE: Length of message and tag must be of {0} bits ({1} chars)".format(self.n * self.l, (self.n * self.l) / 8)
       return
-    """if iv == 0:
-      iv = '\x00' * self.block_len
-    else:
-      # validate IV
-      if type(iv) != str or len(iv) != self.block_len:
-        print "FORGE: IV must be a str with {0} characters".format(self.block_len)
-        return False"""
     mi = self.partition(m)
     ti = self.partition(t)
     newM = ''
@@ -128,7 +118,6 @@ class CBCMAC:
         newT += ti[i + 1]
       else:
         newM += strXor(ti[i], mi[0])
-        #newM += strXor(ti[i], strXor(iv, mi[0]))
         newT += ti[0]
     return (newM, newT)
 
