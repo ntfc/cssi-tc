@@ -1,3 +1,11 @@
+## Status
+1. One text missing
+2. Dont know..
+3. Done
+4. Done
+5. Done
+6. Done
+
 ## TP01
 If the Index of Coincidence is around 0.06 we conclude the cipher is probably a substitution cipher
  -> usar isto para fazer um cracker mais inteligente
@@ -49,26 +57,16 @@ Meter no relatorio que depende das imagens. Uma foto normal, por exemplo, nao da
 BIB: https://en.wikipedia.org/wiki/BMP_file_format#DIB_header_.28bitmap_information_header.29, man pages
 
 ##TP04
-- Cria-se uma chave de `n` bits com: `K = MyKey(n)`
- * para aceder aos `n` bits, fazer `K.k`
-- Cria-se um CBC-MAC com `cbcmac = CBCMAC(n, l)`
+- Criar chaves com `key = MyKey(length=nBits)`
+- Criar CBCMAC com `cbcmac = CBCMAC(n, l)`
 - Para criar tags, existem 2 versões:
- * Segura: `cbcmac.Mac(K, m, secure=True)`
- * Insegura: `cbcmac.Mac(K, m, iv, secure=False)`
-- Para verificar, existem tambem 2 versões:
- * Segura: `cbcmac.Vrfy(K, m, tag, secure=True)`
- * Insegura: `cbcmac.Vrfy(K, m, tag, iv, secure=False)`
-- Para falsificar MACs (quando se retornam todas as tags) fazer o seguinte (usando a versao insegura):
- * `m = m_1,..,m_l` e `t = t_0,..,t_l` sao interceptados
- * atacante sabe que `t_1 = E_k(m_1), .., t_l = E_k(m_l)`
- * atacante constroi `m' = (t_1 XOR m_2) || (t2_2XOR m_1)` e `t' = t_2 || t_1` <b>TODO</b>: este e o caso para `l = 2`
- * Vrfy aceita m' e respectiva tag t'
- * m' != m, excepto se m_2 = m_1 XOR E_k(m_1)
-- Para falsificar MACs quando se usa um IV aleatório fazer:
- * Usar método `Mac` com um IV aleatório
- * Fazer XOR do primeiro bloco da mensagem com o IV aleatório, e reconstruir nova mensagem
- * Usar método `Vrfy` com a mensagem falsificado e com IV=0
-- <b>TODO:</b> criar metodo para falsificar MAC<br>
+ * Segura, retorna último bloco e usa `IV = 0`: `cbcmac.Mac(key, msg, secure=True)`
+ * Insegura, retorna todos os blocos, e opcionalmente poderá usar `IV != 0`: `cbcmac.Mac(key, msg, iv=0, secure=False)`
+- Para verificar, existem apenas 1 versão:
+ * Opcionalmente, pode-se especificar o IV a usar: `cbcmac.Vrfy(K, msg, tag, iv=0)`
+- Para falsificar MACs existem dois métodos (ambos retornam par `(msg, tag)`):
+ * quando `IV != 0`: `cbcmac.ForgeMacRandomIV(msg, tag, iv)`
+ * quando se retornam todos os blocos: `cbcmac.ForgeMacAllTags(msh, tag)`
 
 ##TP05
 - `extended_gcd(a, b)` == `xgcd(a, b)` do sage
