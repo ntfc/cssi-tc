@@ -18,6 +18,8 @@ class CBCMAC:
 
   # msg: message must be in str
   # iv: must be in str format
+  # when secure=True, both IV and all tags are returned. Otherwise, only the
+  # last tag is returned.
   def Mac(self, key, msg, iv=0, secure=True):
     if key.n != self.n:
       print "MAC: Wrong len for key (should be {0} bits)".format(self.n)
@@ -95,10 +97,22 @@ class CBCMAC:
     else:
       return tag == tag2[1]
 
+  # receives  a message, the last tag and a random iv
+  # return the forged MAC
+  def ForgeMacRandomIV(self, m, t, iv):
+    if len(m) != self.str_len:
+      print "FORGE: Message must be a str with {0} characters".format(self.str_len)
+      return
+    if len(t) != len(iv) != self.block_len:
+      print "FORGE: Tag and IV must be a str with {0} characters".format(self.block_len)
+    mi = self.partition(m)
+    newM = strXor(mi[0], iv) + ''.join(mi[1:])
+    return (newM, t)
+    
   # creates the new fake message and fake tag, when all tags are returned
   # m: original message (in str form)
   # t: str of all tags
-  def ForgeMac(self, m, t):
+  def ForgeMacAllTags(self, m, t):
     if len(m) != len(t):
       print "FORGE: Length of message must be the same as the length of all tags"
       return
