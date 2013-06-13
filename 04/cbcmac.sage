@@ -27,12 +27,14 @@ class CBCMAC:
     if type(msg) != str or len(msg) != self.str_len:
       print "MAC: Message must be a str with {0} characters".format(self.str_len)
       return False
+      
     if iv == 0:
       iv = '\x00' * self.block_len
     else:
       if type(iv) != str or len(iv) != self.block_len:
         print "MAC: IV must be a str with {0} characters".format(self.block_len)
         return False
+    
     F = AES.new(key.k, AES.MODE_ECB)
     
     t = [iv]
@@ -64,7 +66,8 @@ class CBCMAC:
     return ml
 
   # tag must be in binary string
-  def Vrfy(self, key, msg, tag, iv=0, secure=True):
+  #def Vrfy(self, key, msg, tag, iv=0, secure=True):
+  def Vrfy(self, key, msg, tag, iv=0):
     if key.n != self.n:
       print "VRFY: Wrong len for key (should be {0} bits)".format(self.n)
       return False
@@ -79,7 +82,11 @@ class CBCMAC:
         print "VRFY: IV must be a str with {0} characters".format(self.block_len)
         return False
 
-    if secure == True:
+    if len(tag) != self.block_len:
+      print "VRFY: Tag must be a str with {0} characters".format(self.block_len)
+      return False
+    
+    """if secure == True:
       # validate tag
       if type(tag) != str and len(tag) != self.block_len:
         print "VRFY: Tag must be a str with {0} characters".format(self.block_len)
@@ -88,14 +95,14 @@ class CBCMAC:
       # when secure=False, tag must be an array with self.l blocks
       if type(tag) != list and len(tag) != self.l and len(''.join(tag)) != (self.str_len):
         print "VRFY: Tag must be a list with {0} blocks, each with {1} characters".format(self.l, self.str_len)
-        return False
+        return False"""
       
 
-    tag2 = self.Mac(key, msg, iv, secure)
-    if secure == True:
-      return tag == tag2
-    else:
-      return tag == tag2[1]
+    tag2 = self.Mac(key, msg, iv)
+    #if secure == True:
+    return tag == tag2
+    #else:
+    #  return tag == tag2[1]
 
   # receives  a message, the last tag and a random iv
   # return the forged MAC
@@ -125,15 +132,15 @@ class CBCMAC:
     newT = ''
     
     newM += strXor(ti[0], mi[1])
-    newT += ti[1]
+    #newT += ti[1]
     for i in xrange(1, self.l):
       if i != (self.l - 1):
         newM += mi[i + 1]
-        newT += ti[i + 1]
+        #newT += ti[i + 1]
       else:
         newM += strXor(ti[i], mi[0])
-        newT += ti[0]
-    return (newM, newT)
+        #newT += ti[0]
+    return (newM, ti[0])
 
 # perform bitwise xor on two binary strings
 # strings must have different length
