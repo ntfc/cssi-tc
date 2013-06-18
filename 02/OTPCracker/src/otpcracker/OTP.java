@@ -1,14 +1,10 @@
+package otpcracker;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import otpcracker.Frequencies;
 import otpcracker.Language;
-import static otpcracker.OTPteste.dec;
-import static otpcracker.OTPteste.mediaOcorrenciaLetras;
-import static otpcracker.OTPteste.xoredCiphers;
-import static otpcracker.Shift.getChar;
-import static otpcracker.Shift.getPos;
-import static otpcracker.Texts.getText;
 
 
 /**
@@ -30,7 +26,7 @@ public class OTP {
       for(int i = 0; i < m.length(); i++) {
         char mi = m.charAt(i);
         char ki = k.charAt(i);
-        c += getChar((getPos(mi) + getPos(ki)) % 26);
+        c += Shift.getChar((Shift.getPos(mi) + Shift.getPos(ki)) % 26);
       }
 
       return c.toUpperCase();
@@ -46,8 +42,8 @@ public class OTP {
       for(int i = 0; i < c.length(); i++) {
         char ci = c.charAt(i);
         char ki = k.charAt(i);
-        int mod = ((getPos(ki)+26) - getPos(ci)) % 26;
-        m += getChar(mod);
+        int mod = ((Shift.getPos(ki)+26) - Shift.getPos(ci)) % 26;
+        m += Shift.getChar(mod);
       }
       return m.toUpperCase();
     }
@@ -55,9 +51,9 @@ public class OTP {
   }
   public static void testIofC(){
     for(int i=0; i<20; i++){
-        String c1 = getText(i);
+        String c1 = TEXTS.getText(i);
           for(int j=i+1; j<20; j++){
-            String c2 = getText(j);
+            String c2 = TEXTS.getText(j);
             String cp = dec(c1,c2);
             double f = Frequencies.indexOfCoincidence(cp);
             System.out.println("c"+i+" xor c"+j+" = "+ f);
@@ -68,9 +64,9 @@ public class OTP {
   
   public static void testChiSquaredStatistic(){
     for(int i=0; i<20; i++){
-        String c1 = getText(i);
+        String c1 = TEXTS.getText(i);
           for(int j=i+1; j<20; j++){
-            String c2 = getText(j);
+            String c2 = TEXTS.getText(j);
             String cp = dec(c1,c2);
             double f = Frequencies.chiSquaredStatistic(cp, Language.English);
             System.out.println("c"+i+" xor c"+j+" = "+ f);
@@ -81,9 +77,9 @@ public class OTP {
   public static List<String> xoredCiphers() {
         ArrayList<String> list = new ArrayList<>();
         for(int i=0; i<20; i++){
-            String c1 = getText(i);
+            String c1 = TEXTS.getText(i);
             for(int j=i+1; j<20; j++){
-                String c2 = getText(j);
+                String c2 = TEXTS.getText(j);
                 String cp = dec(c1,c2);
                 list.add(cp);
             }
