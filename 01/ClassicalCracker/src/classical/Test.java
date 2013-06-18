@@ -118,15 +118,15 @@ public class Test {
 
   public static void groupOne() {
     // texto 1
-    System.out.println("IC texto1 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT1)));
+    System.out.println("IC texto1 = " + decFor.format(Frequencies.indexOfCoincidence(TEXTS.TEXT1)));
     // viginere?
-    //int lenKey1 = VigenereCrack.guessKeyLength(Texts.TEXT1, 3, 7, Language.English);
-    //String key1 = VigenereCrack.getKey(Texts.TEXT1, lenKey1, Language.English);
+    //int lenKey1 = VigenereCrack.guessKeyLength(TEXTS.TEXT1, 3, 7, Language.English);
+    //String key1 = VigenereCrack.getKey(TEXTS.TEXT1, lenKey1, Language.English);
     // affine?
-    //int[] key1 = AffineCrack.bruteForceChiSquared(Texts.TEXT1, Language.English);
+    //int[] key1 = AffineCrack.bruteForceChiSquared(TEXTS.TEXT1, Language.English);
     // monoalphabetic subs?
     // create distribution table
-    /*int[] freqs1 = Frequencies.lettersFrequency(Texts.TEXT1);
+    /*int[] freqs1 = Frequencies.lettersFrequency(TEXTS.TEXT1);
     DecimalFormat decForm = new DecimalFormat("##.#");
     for(int i = 0; i < freqs1.length; i++) {
       double prob = (double)freqs1[i]/Texts.TEXT1.length() * 100.0;
@@ -136,34 +136,36 @@ public class Test {
     System.out.println("");
     // divide ciphertext in groups
     // TODO: the size of group is the size of the word used as keyword
-    String[] div = MonoAlphCracker.divideText(Texts.TEXT1, 5);
+    String[] div = MonoAlphCracker.divideText(TEXTS.TEXT1, 5);
     System.out.println(Arrays.toString(div));
     // count trigraphs
-    Map<String, Integer> tri1 = CrackerUtils.countNgram(Texts.TEXT1, 3);
+    Map<String, Integer> tri1 = CrackerUtils.countNgram(TEXTS.TEXT1, 3);
     System.out.println(tri1);
     
     String key1 = "v.ebiwafdcsymlnuj.o.t.gpr.";
-    System.out.println(MonoSubstitution.dec(key1, Texts.TEXT1));*/
+    System.out.println(MonoSubstitution.dec(key1, TEXTS.TEXT1));*/
 
     // texto 2
-    System.out.println("IC texto2 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT2)));
-    int lenKey2 = VigenereCrack.guessKeyLength(Texts.TEXT2, 4, 7, Language.English);
-    String key2 = VigenereCrack.getKey(Texts.TEXT2, lenKey2, Language.English);
+    System.out.println("IC texto2 = " + decFor.format(Frequencies.indexOfCoincidence(TEXTS.TEXT2)));
+    int lenKey2 = VigenereCrack.guessKeyLength(TEXTS.TEXT2, 4, 7, Language.English);
+    String key2 = VigenereCrack.getKey(TEXTS.TEXT2, lenKey2, Language.English);
     
     // texto 3
-    System.out.println("IC texto3 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT3)));
-    int[] key3 = AffineCrack.bruteForceChiSquared(Texts.TEXT3, Language.French);
-
+    System.out.println("IC texto3 = " + decFor.format(Frequencies.indexOfCoincidence(TEXTS.TEXT3)));
+    int[] key3 = AffineCrack.bruteForceChiSquared(TEXTS.TEXT3, Language.French);
+    String tt = "frpvnautamycdinhhxrqmefniidamtalycdiqtjdunvyrqhruycdfdnqyxrycrphnamnamyctqyddatanhvdamtalrqmdqyrycdycqddsdyydqnvqrafjruycthvrpqhdtasrxdqvnhdsdyydqh";
+    int[] test = AffineCrack.bruteForceChiSquared(tt, Language.English);
+    System.out.println(Affine.dec(test[0], test[1], tt).toLowerCase());
     // texto 4
-    System.out.println("IC texto4 = " + decFor.format(Frequencies.indexOfCoincidence(Texts.TEXT4)));
-    int lenKey4 = VigenereCrack.guessKeyLength(Texts.TEXT4, 4, 7, Language.English);
-    String key4 = VigenereCrack.getKey(Texts.TEXT4, lenKey4, Language.English);
+    System.out.println("IC texto4 = " + decFor.format(Frequencies.indexOfCoincidence(TEXTS.TEXT4)));
+    int lenKey4 = VigenereCrack.guessKeyLength(TEXTS.TEXT4, 4, 7, Language.English);
+    String key4 = VigenereCrack.getKey(TEXTS.TEXT4, lenKey4, Language.English);
 
 
-    //System.out.println("texto1 = " + Affine.dec(key1[0], key1[1], Texts.TEXT1));
-    System.out.println("chave2 = " + key2 + ", texto2 = " + Vigenere.dec(key2, Texts.TEXT2));
-    System.out.println("chave3 = " + Arrays.toString(key3) + ", texto3 = " + Affine.dec(key3[0], key3[1], Texts.TEXT3));
-    System.out.println("chave4 = " + key4 + ", texto4 = " + Vigenere.dec(key4, Texts.TEXT4));
+    //System.out.println("texto1 = " + Affine.dec(key1[0], key1[1], TEXTS.TEXT1));
+    System.out.println("chave2 = " + key2 + ", texto2 = " + Vigenere.dec(key2, TEXTS.TEXT2));
+    System.out.println("chave3 = " + Arrays.toString(key3) + ", texto3 = " + Affine.dec(key3[0], key3[1], TEXTS.TEXT3));
+    System.out.println("chave4 = " + key4 + ", texto4 = " + Vigenere.dec(key4, TEXTS.TEXT4));
   }
   
   public static String sub(char a, char b, String orig, String nova){

@@ -6,7 +6,6 @@
 package classical.cracker;
 
 import classical.Affine;
-import java.util.ArrayList;
 
 /**
  *

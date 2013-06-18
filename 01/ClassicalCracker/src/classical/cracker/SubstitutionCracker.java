@@ -5,10 +5,7 @@
 
 package classical.cracker;
 
-import classical.Affine;
-import classical.MonoSubstitution;
 import java.util.Map;
-import java.util.Random;
 import java.util.TreeMap;
 
 /**
