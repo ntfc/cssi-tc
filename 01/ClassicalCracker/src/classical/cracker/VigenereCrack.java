@@ -5,7 +5,6 @@
 
 package classical.cracker;
 
-import classical.Texts;
 import classical.Shift;
 
 /**
@@ -55,7 +54,6 @@ public class VigenereCrack {
     // to do that, we compute the squared difference (to remove possible negative values) and we choose the smallest
     // difference = (freqEnglish - IC_calculated)^2
     // this is the chi-squared statistics, or Friedman attack
-    // ver isto: http://cs.widener.edu/~chiffens/cryptanalysis.html
     double smallest = -1.0;
     int keyLength = minLen;
     for(int i = 0; i < indexes.length; i++) {
@@ -72,10 +70,6 @@ public class VigenereCrack {
     return keyLength;
   }
 
-  public static int guessKeyLengthKasiski(String c) {
-    // see http://cs.colgate.edu/~chris/FSemWeb/tools/kasiski.html
-    return 0;
-  }
   private static int bestShiftCipher(String d, Language lang) {
     double min = -1.0;
     int shift = 0;
