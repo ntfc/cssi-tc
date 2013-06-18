@@ -103,11 +103,17 @@ public class OTP {
         //xorTextWithLetters(6,13);
         //testIofC();
        
-        double[] res = desvioCiphers();
-        for(int i = 0; i < res.length; i++){
-            System.out.println(res[i]);
-        
+       /* double[] res = desvioCiphers();
+        List<String> list = llist();
+        if(res.length == list.size()){
+            System.out.println("equal");
         }
+        
+        for(int i = 0; i < res.length; i++){
+            System.out.println(list.get(i) +" " + res[i]);
+        
+        }*/
+        testChiSquaredStatistic();
        
         
 
@@ -257,12 +263,13 @@ public class OTP {
                 String cp = dec(c1, c2);
                 double f = Frequencies.chiSquaredStatistic(cp, Language.English);
                 System.out.println("c" + i + " xor c" + j + " = " + f);
+                //System.out.println(f);
                 if (f < min) {
                     min = f;
                 }
             }
         }
-        System.out.println("max: " + min);
+        //System.out.println("max: " + min);
     }
 
     //tentar substituir por the
@@ -371,5 +378,18 @@ public class OTP {
             j++;
         }
         return desvio;
+    }
+    
+     public static List<String> llist() {
+        ArrayList<String> list = new ArrayList<>();
+        for(int i=0; i<20; i++){
+            String c1 = getText(i);
+            for(int j=i+1; j<20; j++){
+                String c2 = getText(j);
+                String cp = dec(c1,c2);
+                list.add(i+" xor "+j);
+            }
+        }
+        return list;
     }
 }

@@ -23,7 +23,97 @@ public class Test {
   private static DecimalFormat decFor = new DecimalFormat("#.####");
 
   public static void main(String[] args) throws Exception {
-    groupOne();
+      /*int[] freq = Frequencies.lettersFrequency(Texts.TEXT1);
+      for(int i = 0; i<freq.length;i++){
+          double t = ((double) freq[i])/Texts.TEXT1.length();
+          System.out.println(t);
+      }*/
+      
+      String t = "EMTLOAUDETDNEUAWYAFHNAFEYKDPUMLWTYIEOXYAIPJEKQPKUTKMTOLIETINETAEKANIAAEYKZAEKXEEJEKAHYAXETOIDPKZENKAHIETIWYTKKTKTOLDAILKTOIUAITLEDAPWZUTFZEENDTYYAFUAZENXEOJNETYEOWEUPXEZTAETNFTLKNAAEITOIYEKXEJUEIUZEFZEENDTYYAFEUEKUZEAOEFZEENEIAEZEJNEAHFZEJZETMXEYHEJUMTKUEY";
+      String orig = Texts.TEXT1;
+      
+      String nova = Texts.TEXT1;
+      /*nova = sub('C', 'e', orig, nova);
+      nova = sub('G', 't', orig, nova);
+      nova = sub('S', 'a', orig, nova);
+      nova = sub('K', 'k', orig, nova);
+      nova = sub('Y', 'o', orig, nova);
+      nova = sub('I', 'i', orig, nova);
+      nova = sub('U', 'n', orig, nova);
+      nova = sub('Z', 's', orig, nova);
+      nova = sub('N', 'h', orig, nova);
+      nova = sub('E', 'r', orig, nova);
+      nova = sub('O', 'd', orig, nova);
+      nova = sub('F', 'l', orig, nova);
+      nova = sub('D', 'c', orig, nova);
+      nova = sub('X', 'u', orig, nova);
+      nova = sub('L', 'm', orig, nova);
+      nova = sub('J', 'w', orig, nova);
+      nova = sub('P', 'f', orig, nova);
+      nova = sub('W', 'g', orig, nova);
+      nova = sub('M', 'y', orig, nova);
+      nova = sub('H', 'p', orig, nova);
+      nova = sub('A', 'j', orig, nova);
+      nova = sub('Q', 'b', orig, nova);
+      nova = sub('V', 'v', orig, nova);
+      nova = sub('T', 'x', orig, nova);
+      nova = sub('R', 'q', orig, nova);
+      nova = sub('B', 'z', orig, nova);*/
+
+      /*nova = sub('O', 'd', orig, nova);
+      nova = sub('S', 'a', orig, nova);
+      nova = sub('U', 'n', orig, nova);
+      nova = sub('D', 'c', orig, nova);
+      nova = sub('C', 'e', orig, nova);
+      nova = sub('W', 'g', orig, nova);
+      nova = sub('Y', 'o', orig, nova);
+      nova = sub('S', 'a', orig, nova);
+      nova = sub('F', 'l', orig, nova);
+      
+      nova = sub('G', 't', orig, nova);
+      nova = sub('A', 'h', orig, nova);*/
+      
+      nova = sub('U', 't', orig, nova);
+      nova = sub('Z', 'h', orig, nova);
+      nova = sub('C', 'e', orig, nova);
+      
+      nova = sub('G', 'a', orig, nova);
+      nova = sub('O', 'n', orig, nova);
+      nova = sub('I', 'd', orig, nova);
+      
+      nova = sub('S', 'o', orig, nova);
+      
+      nova = sub('K', 's', orig, nova);
+      
+      nova = sub('Y', 'r', orig, nova);
+      
+      nova = sub('W', 'g', orig, nova);
+      
+      nova = sub('N', 'l', orig, nova);
+      
+      nova = sub('F', 'w', orig, nova);
+      
+      nova = sub('H', 'f', orig, nova);
+      
+      nova = sub('E', 'i', orig, nova);
+      
+      nova = sub('D', 'b', orig, nova);
+      
+      nova = sub('M', 'm', orig, nova);
+      nova = sub('L', 'y', orig, nova);
+      
+      
+      nova = sub('P', 'u', orig, nova); 
+      nova = sub('X', 'p', orig, nova); 
+      nova = sub('J', 'c', orig, nova);
+      nova = sub('A', 'v', orig, nova);
+      nova = sub('Q', 'j', orig, nova);
+      
+      
+      System.out.println(nova);
+      
+     
+     
   }
 
   public static void groupOne() {
@@ -75,5 +165,15 @@ public class Test {
     System.out.println("chave3 = " + Arrays.toString(key3) + ", texto3 = " + Affine.dec(key3[0], key3[1], Texts.TEXT3));
     System.out.println("chave4 = " + key4 + ", texto4 = " + Vigenere.dec(key4, Texts.TEXT4));
   }
-
+  
+  public static String sub(char a, char b, String orig, String nova){
+      char[] t = nova.toCharArray();
+      for(int i = 0; i<orig.length(); i++){
+          if(orig.charAt(i) == a && nova.charAt(i) == a){
+              t[i] = b;       
+          }
+      }
+      return new String(t);
+  }
+  
 }
