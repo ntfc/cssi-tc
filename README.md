@@ -1,5 +1,5 @@
 ## Status
-1. One text missing
+1. Done
 2. Dont know..
 3. Done
 4. Done
