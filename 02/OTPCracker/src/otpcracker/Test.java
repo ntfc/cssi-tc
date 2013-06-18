@@ -21,11 +21,18 @@ public class Test {
         OTP.testIofC();
         
         //2 desafio
-        //double[] valores = OTP.desvioCiphers();
+        double[] valores = OTP.desvioCiphers();
          //for(int i = 0; i < valores.length; i++){
             //System.out.println(valores[i]);
         //} 
-       
+        
+       int x = 0;
+       for(int i=0; i<20; i++){
+          for(int j=i+1; j<20; j++){
+            System.out.println("c"+i+" xor c"+j+" = "+ valores[x]);
+            x++;
+          }
+      }
             
     }
     
