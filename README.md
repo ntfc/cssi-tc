@@ -6,6 +6,9 @@
 5. Done
 6. Done
 
+#### Report
+* The drawings in the report are not completely accurate. Must fix that
+
 ## TP01
 If the Index of Coincidence is around 0.06 we conclude the cipher is probably a substitution cipher
  -> usar isto para fazer um cracker mais inteligente
