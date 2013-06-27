@@ -1,0 +1,60 @@
+\chapter{Grupo I}
+O primeiro passo para decifrar os quatro criptogramas é o cálculo do índice de coincidência. A partir desse valor, é possível distinguir entre cifras mono-alfabéticas e poli-alfabéticas, ou em que linguagem se encontra o texto. A fórmula usada para o cálculo do índice de coincidência é a seguinte:
+\begin{equation*}
+\mathsf{IC} = \dfrac{\sum_{i=0}^{26}{f_i (f_i - 1)}}{n (n - 1)}
+\end{equation*}
+Sendo $n$ o tamanho do criptograma e $f_i$ a frequência (número de ocorrências) da letra $i$ do alfabeto de 26 letras. Com base nesta fórmula, obtivemos os seguintes valores, sabendo que o \textsf{IC} do inglês e do francês são, respectivamente, 0.0667 e 0.0746:
+\begin{itemize}
+  \item IC Texto1: 0.0623
+  \item IC Texto2: 0.0409
+  \item IC Texto3: 0.0799
+  \item IC Texto4: 0.0414
+\end{itemize}
+O texto 1 e o texto 3 parecem ser cifras de substituição mono-alfabética em inglês e francês, respectivamente. O texto 2 e 4 foram provavelmente cifradas com uma cifra de substituição poli-alfabética, nomeadamente com a cifra Vigenère. Ambos são textos em inglês.\\
+O texto 1 foi o único que ainda não conseguimos decifrar. De seguida apresentamos os passos dados para cifrar os quatro textos.
+\section{Affine}
+A chave de uma cifra Affine são dois números $a$ e $b$. A operação de cifração é $E(x) = (ax + b) \pmod{26}$ e a de decifração $D(x) = a^{-1}(x - b) \pmod{26}$, de tal forma que $a$ é coprimo de $m$.\\
+Para se atacar a cifra Affine, pode-se usar um método \textit{bruteforce} juntamente com um teste do qui-quadrado para testar a validade da chave obtida. Ou seja, o valor mais baixo do qui-quadrado de todos os candidatos a chave é efectivamente a chave da cifra. Segue-se o código Java para atacar a cifra Affine.
+\begin{lstlisting}[style=Java,caption=Método para obter a chave utilizada na cifra Affine.]
+public static int[] bruteForceChiSquared(String c, Language l) {
+  double smallestChi = -1.0;
+  int[] key = new int[2];
+  for(int a : Affine.A) { # Affine.A contem todos os coprimos de 26
+    for(int b = 0; b < 26; b++) {
+      String isM = Affine.dec(a, b, c);
+      double chi = Frequencies.chiSquaredStatistic(isM, l);
+      if(smallestChi == -1.0) {
+        smallestChi = chi;
+        key[0] = a; key[1] = b;
+      }
+      if(chi < smallestChi) {
+        smallestChi = chi;
+        key[0] = a; key[1] = b;
+      }
+    }
+  }
+  return key;
+}
+\end{lstlisting}
+O chave obtida para o texto 3 é $a = 19, b = 4$ e o texto limpo obtido é: \\
+\textit{''o canada terre de nos aieux ton front est ceint de fleurons glorieux car ton bras sait porter lepee il sait porter la croix ton histoire est une epopee des plus brillants exploits et ta valeur de foi trempee protegera nos foyers et nos droits''}
+\section{Vigenère}
+O processo para atacar o Vigenère já não foi tão simples quanto o usado para o Affine. Na nossa abordagem, o primeiro passo foi calcular o tamanho da chave, sabendo que este valor estaria entre dois números não muito grandes (4 a 7). Para o Vigenère, o IC é calculado de forma diferente: pega-se no criptograma, roda-se $x$ posições para a direita e colocam-se ambos os textos em paralelo; o IC é o número de posições onde a mesma letra ocorre tanto no texto original como no texto rodado, a dividir pelo tamanho do criptograma. No nosso caso, o valor de $x$ varia entre 4 e 7. No final, o $x$ cujo IC seja o mais próximo do IC da linguagem é o que representa o tamanho da chave.\\
+Tendo o tamanho $d$ da chave, obter a chave torna-se bastante fácil. Basta para isso dividir o texto em $d$ blocos com a forma: para todo o $i$ tal que $1 \leq i \leq d$, $c_i, c_{i+d}, c_{i+2d}, \dotsc$, e sabe-se que cada um destes blocos foi cifrado usando um \textit{shift}. Para descobrir qual o melhor \textit{shift} usa-se a seguinte forma, onde $q_i$ representa a frequência de ocorrências da letra $i$ do alfabeto de 26 letras:
+\begin{equation*}
+\sum_{i=1}^{26} (q_i - f_i)^2
+\end{equation*}
+O valor mais pequeno corresponde ao melhor \textit{shift}. No final, a chave é o conjunto dos $d$ melhores \textit{shifts}.\\
+A chaves obtidas para os textos 2 e 4 foram, respectivamente, \textsf{crypto} e \textsf{theory}. Os textos limpos são:\\
+\textit{''i learned how to calculate the amount of paper needed for a room when i was at school you multiply the square footage of the walls by the cubic contents of the floor and ceiling combined and double it you then allow half the total for openings such as windows and doors then you allow the other half for matching the pattern then you double the whole thing again to give a margin of error and then you order the paper''}\\
+\textit{''i grew up among slow talkers men in particular who dropped words a few at a time like beans in a hill and when i got to minneapolis where people took a lake wobegon comma to mean the end of a story i couldnt speak a whole sentence in company and was considered not too bright so i enrolled in a speech course taught by orville sand the founder of reflexive relaxology a self hypnotic technique that enabled a person to speak up to three hundred words per minute''}
+\section{Mono-Substituição Alfabética}
+O processo utilizado para decifrar o criptograma 1 baseou-se na análise de ocorrência de cada letra do criptograma comparativamente à ocorrência das letras do alfabeto em textos em inglês. Assim, partimos da letra com maior ocorrência, a letra \textit{c}, e substituímos esta pelo \textit{e}. De seguida procuramos a ocorrência dos trigramas mais comuns, acabados em \textit{c}, no criptograma e substituímos pelo trigrama mais comum em inglês \textit{the}. A seguir, substituímos a segunda letra mais frequente do criptograma, \textit{g}, pela letra em inglês mais comum e ainda não utilizada, o \textit{a}. Baseado no \textit{a} procuramos os trigramas mais frequentes começados por esta letra de forma a encontrar ocorrências da palavra \textit{and}. Neste momento, e depois de algumas tentativas de substituição sem sucesso e que não nos levaram a pista nenhuma, verificamos a ocorrência da palavra \textit{dead} que pode indicar que estamos no caminho certo.\\
+O resto do processo é semelhante ao descrito até este ponto. A partir dele foram também surgindo partes de palavras que intuitivamente indicam algumas letras a substituir, como \textit{warden} para \textit{garden}, de modo a encontrar o texto limpo. Assim, o texto limpo correspondente ao criptograma 1 é o seguinte:\\
+\textit{''i may not be able to grow flowers but my garden produces just as many dead leaves old overshoes pieces of rope and bushels of dead grass as anybodys and today i bought a wheel barrow to help in clearing it up i have always loved and respected the wheel barrow it is the one wheeled vehicle of which i am perfect master''}
+%\begin{btSect}{bib/bibz01}
+% \section{Bibliografia}
+% \btPrintCited
+ %\btPrintNotCited
+% \btPrintAll
+%\end{btSect}

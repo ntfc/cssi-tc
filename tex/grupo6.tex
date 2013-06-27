@@ -1,0 +1,17 @@
+\chapter{Grupo VI}
+Neste grupo pretendia-se decifrar um criptograma obtido com a cifra ElGamal. Como já temos acesso às chaves pública e privada, basta implementar a função \textsf{Dec}, e no final aplicar a função de descodificação definida em \ref{subsec:decode}. Optámos mais uma vez pela utilização do \sage. De seguida apresentam-se as funções \textsf{Enc} e \textsf{Dec}:
+\begin{lstlisting}[style=sage]
+def enc(pk, p, g, msg):
+  k = floor( 1 + (p-2) * random())
+  return ( Mod(g, p)**k, msg * Mod(pk**k, p))
+def dec(sk, p, g, c1, c2):
+  return Mod(c2, p) * Mod(c1, p)**(-sk)
+\end{lstlisting}
+Estas funções retornam, respectivamente, $(c_1,c_2) = (g^k, m \cdot h^k)$ e $m = c_2 \cdot c_1^{-x}$.\\
+Tendo estas duas funções, bastou-nos implementar outro método para decifrar o texto dado no enunciado. Essa função pode ser codificada numa única linha com:
+\begin{lstlisting}[style=sage]
+def decText(sk, p, g, text):
+  return ''.join(map(lambda (c1,c2) : (decodeTri(dec(sk, p, g, c1, c2))), text))
+\end{lstlisting}
+O resultado final obtido foi:\\
+\textit{''she stands up in the garden where she has been working and looks into the distance she has sensed a change in the weather there is another gust of wind a buckle of noise in the air and the tall cypresses sway she turns and moves up hill towards the house climbing over a low wall feeling the first drops of rain on her bare arms she crosses the loggia and quickly enters the house''}

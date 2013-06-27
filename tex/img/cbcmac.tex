@@ -1,0 +1,83 @@
+\tikzset{line/.style={draw, -latex',shorten <=1bp,shorten >=1bp}}
+
+\begin{tikzpicture}
+  %\draw[help lines] (0,0) grid (9, 9);
+  \foreach \i in {0,...,2} { %%% CHANGE NUMBER OF BLOCKS HERE! %%%
+    \pgfmathsetmacro{\z}{3.5*\i}
+    % draw k
+    \node (k\i) at (-0.5 + \z, 2) {\textsf{k}};
+    % draw box
+    \path[draw] (0.5 + \z, 1.5) -- ++(1.5, 0) -- ++(0, 1) -- ++(-1.5, 0) -- ++(0, -1);
+    % draw text
+    \node (F\i) at (1.25 + \z, 2) {$\mathsf{F_k}$};
+    % this macros cast the float to integer
+    \pgfmathtruncatemacro{\t}{1+\i}
+    \pgfmathtruncatemacro{\m}{2+\i}
+    \pgfmathtruncatemacro{\r}{4 - \i} %%% CHANGE NUMBER OF BLOCKS HERE! %%%
+    %%%% if \i != 0 %%%%
+    \ifthenelse{\NOT 0 = \i} {
+      % draw XOR gate in all blocks, except the first
+      \node (XOR\i)[XOR] at (1.25 + \z, 3.75) {};
+      % draw arrows above F_k
+      \path[line] (XOR\i) edge ++(0, -1.25) % xor to F_k
+                  (k\i) edge ++(1, 0); % k to F_k
+      %%%% last block %%%%
+      \ifthenelse{2 = \i}{ %%% CHANGE NUMBER OF BLOCKS HERE! %%%
+        % draw input block
+        \node (m\i) at (1.25 + \z, 5) {$t_{\ell(n)} \oplus m_{1}$};
+        % draw output block
+        \node (t\i) at (1.25 + \z, 0) {$t_{\ell(n)}$};
+      }
+      %%%% all blocks, except first and last %%%%
+      {
+        % draw input block
+        \node (m\i) at (1.25 + \z, 5) {$m_{\r}$};
+        % draw output block
+        \node (t\i) at (1.25 + \z, 0) {$t_{\m}$};
+      }
+      % draw arrows above F_k
+      \path[line] (m\i) edge (XOR\i); % input block to xor
+    }
+    %%%% first block %%%%
+    {
+      % draw input block
+      \node (m\i) at (1.25 + \z, 5) {$t_{\t} \oplus m_{\m}$};
+      % draw arrows above F_k
+      \path[line] (m\i) edge ++(0, -2.5) % input block to F_k
+                  (k\i) edge ++(1, 0); % k to F_k
+      % draw output block
+      \node (t\i) at (1.25 + \z, 0) {$t_{\m}$};
+      
+    }
+    % dont add padding to the beggining of the line
+    %\tikzset{line/.style={draw, -latex',shorten <=0bp,shorten >=1bp}}
+    \path[line] (1.25 + \z, 1.5) -- (t\i); % F_k box to block
+    %\tikzset{line/.style={draw, -latex',shorten <=1bp,shorten >=1bp}}
+  }
+  
+  %%%% draw only arrows
+  \foreach \i in {0,...,2} { %%% CHANGE NUMBER OF BLOCKS HERE! %%%
+    \pgfmathsetmacro{\z}{3.5*\i}
+    \pgfmathtruncatemacro{\t}{1+\i}
+    \pgfmathtruncatemacro{\u}{1-\i}
+    \ifthenelse{\NOT 2 = \i} { %%% CHANGE NUMBER OF BLOCKS HERE! %%%
+      \ifthenelse{1 = \i}{  %%% CHANGE NUMBER OF BLOCKS HERE! %%%
+        \node (dots1) at (3 + \z, 5) {$\cdots$};
+        \node (dots1) at (3 + \z, 3.25) {$\cdots$};
+        \node (dots1) at (3 + \z, 0) {$\cdots$};
+        \path[line] (4 + \z, 3.75) -- (XOR\t);
+      }
+      {
+        % draw arrow from F_k to XOR
+        \path[line] (1.25 + \z, 1) -- ++(1.25, 0) -- ++(0, 2.75) -- (XOR\t);
+      }
+    }
+    {
+    }
+    
+  }
+
+  % dont add padding to the beggining of the line
+  \tikzset{line/.style={draw, -latex',shorten <=0bp,shorten >=1bp}}
+  %\path[line] (3, 4) -- (t1XORm3);
+\end{tikzpicture}

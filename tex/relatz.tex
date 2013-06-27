@@ -1,0 +1,116 @@
+\documentclass[a4paper,11pt]{report}
+\usepackage[utf8]{inputenc} % Ac­cept dif­fer­ent in­put en­cod­ings
+\usepackage{amsmath} % AMS math­e­mat­i­cal fa­cil­i­ties for LATEX
+\usepackage[T1]{fontenc} % Stan­dard pack­age for se­lect­ing font en­cod­ings
+\usepackage[portuguese]{babel} % Mul­tilin­gual sup­port for Plain TEX or LATEX
+\usepackage{hyperref} % urls
+\usepackage{todonotes} % Mark­ing things to do in a LATEX doc­u­ment
+\usepackage{bibtopic} % multiples biblios
+\usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
+\usepackage{subfigure}
+\usepackage[section]{placeins} % place a \FloatBarrier before every section
+\usepackage{algpseudocode} % for algorithms
+\usepackage{algorithm} % for algorithms
+\usepackage{listings} % for listings
+\usepackage{courier} % to show courier when using \texttt or \ttfamily
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,fit,calc,positioning,automata}
+
+% define XOR gate: http://tex.stackexchange.com/questions/75836/creating-a-seamless-xor-symbol-as-node
+\tikzset{XOR/.style={draw,circle,append after command={
+    [shorten >=\pgflinewidth, shorten <=\pgflinewidth,]
+    (\tikzlastnode.north) edge (\tikzlastnode.south)
+    (\tikzlastnode.east) edge (\tikzlastnode.west)
+}}}
+
+% mudar algorithm para algoritmo
+\floatname{algorithm}{Algoritmo}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\numberwithin{algorithm}{section} % Number algorithms within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+% margins size
+\usepackage[margin=2.5cm]{geometry}
+
+\newcommand{\sage}{\textsf{Sage}}
+
+% listings
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\renewcommand{\lstlistingname}{Código}
+\lstdefinestyle{Java}{
+  frame=tb,
+  language=Java,
+  tabsize=2,
+  breaklines=true,
+  breakatwhitespace=true,
+  basicstyle=\scriptsize\ttfamily,
+  aboveskip=3mm,
+  belowskip=3mm,
+  numberstyle=\tiny\color{gray},
+  captionpos=t,
+  extendedchars=true,
+  stringstyle=\color{white}\ttfamily,
+}
+\lstdefinestyle{sage}{
+  frame=tb,
+  language=Python,
+  tabsize=2,
+  breaklines=true,
+  breakatwhitespace=true,
+  basicstyle={\scriptsize\ttfamily},
+  aboveskip=3mm,
+  belowskip=3mm,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  showstringspaces=false,
+  captionpos=t,
+  %morecomment=[is]{\#}{ } % could be used to hide comments
+}
+
+\lstdefinestyle{Bash}{
+  language=Bash,
+  frame=tb,
+  tabsize=2,
+  breaklines=true,
+  breakatwhitespace=true,
+  basicstyle={\scriptsize\ttfamily},
+  aboveskip=3mm,
+  belowskip=3mm,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  showstringspaces=false,
+  captionpos=t,
+  morekeywords={sage},
+  alsoletter={:~$},
+  morekeywords=[2]{sage:},
+  keywordstyle=[2]{\color{red}},
+  literate={\$}{{\textcolor{red}{\$}}}1 
+         {:}{{\textcolor{red}{:}}}1
+         {~}{{\textcolor{red}{\textasciitilde}}}1,
+}
+
+\title{Técnicas Criptográficas -- Exercícios TP}
+\author{Nuno Carvalho pg22815 \and Milton Nunes pg22797}
+\date{\today}
+\begin{document}
+\maketitle
+\input{grupo1}
+\input{grupo2}
+\input{grupo3}
+\input{grupo4}
+\input{grupo5}
+\input{grupo6}
+%\bibliographystyle{alpha}
+%\nocite{*} % Show all Bib-entries
+%\bibliography{bib/bibz01,bib/bibz03}
+\end{document}
+

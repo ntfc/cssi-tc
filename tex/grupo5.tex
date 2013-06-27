@@ -1,0 +1,197 @@
+\chapter{Grupo V}
+\section{Congruências}
+Para resolver os sistemas de congruências podemos utilizar o Teorema Chinês dos Restos (CRT). O CRT serve exactamente para resolver os sistemas de congruências dados no enunciado, ou seja, tendo um conjunto $n_1, \dotsc, n_k$ de inteiros mutualmente coprimos e dada uma sequência de inteiros $a_1, \dotsc, a_k$, existe um inteiro $x$ que resolve o seguinte sistema de congruências:
+\begin{equation*}
+\begin{matrix}
+x \equiv a_1 \pmod{n_1} \\
+x \equiv a_2 \pmod{n_2} \\
+\vdots                  \\
+x \equiv a_k \pmod{n_k} \\
+\end{matrix}
+\end{equation*}
+Para calcular o CRT precisamos de utilizar o algoritmo de Euclides estendido. Com o Euclides estendido (\textsf{extendedgcd}) podemos encontrar os inteiros $r_i$ e $s_i$ tal que $r_i n_i + s_i (N/n_i) = 1$. Ambos os algoritmos são apresentados em \ref{alg:xgcd} e \ref{alg:crt}.\\
+\begin{algorithm}
+  \caption{Algoritmo de Euclides estendido}\label{alg:xgcd}
+  \begin{algorithmic}
+    \Require Inteiros $a \geq b > 0$
+    \Ensure $(g, X, Y)$ com $g = \gcd{(a,b)}$ e $g = Xa + Yb$
+    \State $x \gets 0, y \gets 1$
+    \State $lastx \gets 1, lasty \gets 0$
+    \While{$b \neq 0$}
+      \State $quot \gets a \text{ div } b$
+      \State $(a,b) \gets (b, a \bmod b)$
+      \State $(x, lastx) \gets (lastx - quot \times x, x)$
+      \State $(y, lasty) \gets (lasty - quot \times y, y)$
+    \EndWhile
+    \State $g \gets (lastx \times a_{pre}) + (lasty \times b_{pre})$
+    \Comment{$a_{pre}$ e $b_{pre}$ valores originais de $a$ e $b$}
+    \State \Return $(g, lastx, lasty)$
+  \end{algorithmic}
+\end{algorithm}
+%
+\begin{algorithm}
+  \caption{Teorema Chinês dos Restos}\label{alg:crt}
+  \begin{algorithmic}
+    \Require $x \equiv a_i \pmod{n_i}\ \text{para } i = 1, \dotsc, k$ tal que $n_i$ e $N/n_i$ são coprimos
+    \Ensure $x$ tal que resolve o sistema de congruências
+    \State $N \gets \prod_{i = 1}^k{n_i}$
+    \State $x \gets 0$
+    \For{$i = 1$ to $k$}
+      \State $(g, r_i, s_i) \gets \mathsf{extendedgcd}(n_i, N/n_i)$
+      \Comment{verifica-se sempre $g = 1$}
+      \State $e_i \gets s_i \times (N/n_i)$
+      \State $x \gets x + a_i \times e_i$
+    \EndFor
+    \State \Return $x \bmod{N}$
+  \end{algorithmic}
+\end{algorithm}
+Optámos por implementar os algoritmos em \sage, sendo o~\ref{alg:xgcd} implementado como \verb|extended_gcd(a, b)| e o CRT como \verb|solve_congruences(a, n)|. Note-se que os parâmetros \verb|a| e \verb|n| de \verb|solve_congruences| deverão ser listas inteiros de igual comprimento.\\
+Usando a função \verb|solve_congruences|, é bastante simples resolver os dois primeiros exercícios deste grupo. Mas para resolver o segundo exercício, é preciso chegar à seguinte conclusão:
+\begin{equation*}
+\left\{
+  \begin{array}{l l}
+    13x \equiv 4  \pmod{99}  \\
+    15x \equiv 56 \pmod{101} \\
+  \end{array}
+\right.
+\Leftrightarrow
+\left\{
+  \begin{array}{l l}
+    x \equiv 4/13  \pmod{99}  \\
+    x \equiv 56/15 \pmod{101} \\
+  \end{array}
+\right.
+\Leftrightarrow
+\left\{
+  \begin{array}{l l}
+    x \equiv 46  \pmod{99} \\
+    x \equiv 98 \pmod{101} \\
+  \end{array}
+\right.
+\end{equation*}
+em que $\bmod{(4/13, 99)} = 46$ e $\bmod{(56/15, 101)} = 98$.\\
+Sendo assim, basta executar os seguintes comandos em \sage:
+\scriptsize\begin{verbatim}
+sage: solve_congruences([12, 9, 23], [25, 26, 27])
+14387
+sage: solve_congruences([46, 98], [99, 101])
+7471
+\end{verbatim}\normalsize
+\section{RSA}
+São nos dadas duas chaves públicas com módulos $n$ pequenos e de fácil factorização. Logo, para decifrar os textos basta:
+\begin{enumerate}
+  \item factorizar $n$ para obter o os factores $p \cdot q = n$
+  \item calcular $\phi(n) = (p-1)(q-1)$
+  \item calcular expoente privado $d$ tal que $d^{-1} \equiv e \pmod{\phi(n)}$. Neste momento, temos a chave privada e podemos decifrar os textos
+  \item decifrar os textos número a número, ou seja, decifra-se um número de cada vez para se obter o trio de letras original
+  \item concatenar os resultados obtidos para criar o texto original
+\end{enumerate}
+\subsection{Factorizar $n$}
+Dado que, como referido, a factorização é feita sobre $n$ pequenos a função de factorização é bastante simples:
+\begin{lstlisting}[style=sage]
+def factorN(n):
+  for i in range(5, 500):
+    for j in range(5, 500):
+      if i*j == n:
+        return (i,j)
+  return -1
+\end{lstlisting}
+\subsection{Cálculo expoente privado $d$}
+Para calcular o expoente privado $d$ é, em primeiro lugar calculado o valor de $\phi(n)$:
+\begin{lstlisting}[style=sage]
+ phi = (p-1)*(q-1)
+\end{lstlisting}
+De assinalar que $p$ e $q$ são o resultado da função de factorização de $n$. De seguida, é então calculado o expoente privado:
+\begin{lstlisting}[style=sage]
+ d = Integer(e).inverse_mod(phi)
+\end{lstlisting}
+\subsection{Decifração e descodificação}\label{subsec:decode}
+De forma a recuperar o texto limpo foram desenvolvidas as seguintes funções que permitem decifrar e descodificar os criptogramas dados:
+\begin{lstlisting}[style=sage]
+def dec(sk, c):
+  return power_mod(c, sk[1], sk[0])
+
+def decText(sk, text):
+  return ''.join(map(lambda x : decodeTri(dec(sk, x)) , text))
+
+def intToChr(i):
+  return abc[i]
+
+def decodeTri(t):
+  for i in xrange(0,26):
+    for j in xrange(0,26):
+      for k in xrange(0,26):
+        if ((i*(26**2)) + (j*26) + k) == t:
+          return str(intToChr(i) + intToChr(j) + intToChr(k))
+\end{lstlisting}
+Assim foi possível recuperar textos limpos dos criptogramas 1 e 2 indicados no enunciado, respectivamente:\\
+\textit{''lake wobegon is mostly poor sandy soil and every spring the earth heaves up a new crop of rocks piles of rocks ten feet high in the corners of fields picked by generations of us monuments to our industry our ancestors chose the place tired from their long journey sad for having left the mother land behind and this place reminded them of there so they settled here forgetting that they had left there because the land wasnt so good so the new life turned out to be a lot like the old except the winters are worsez''} \\
+\textit{''i became involved in an argument about modern painting a subject upon which i am spectacularly ill informed however many of my friends can become heated and even violent on the subject and i enjoy their wrangles in a modest way i am an artist myself and i have some sympathy with the abstractionists although i have gone beyond them in my own approach to art i am a lumpist two or three decades ago it was quite fashionable to be a cubist and to draw every thing in cubes then there was a revolt by the vorticists who drew every thing in whirls we now have the abstractionists who paint every thing in a very abstracted manner but my own small works done on my telephone pad are composed of carefully shaded strangely shaped lumps with traces of cubism vorticism and abstractionism in them for those who possess the seeing eye as a lumpist i stand alone''}
+\section{Calcular Símbolos de Jacobi}
+Os Símbolos de Jacobi, que consistem numa generalização dos Símbolos de Legendre, foram criados por Jacobi em 1837 e revelaram-se bastante úteis em vários ramos da teoria dos números, especialmente na teoria computacional dos números, nomeadamente no teste de primalidade e factorização de inteiros, e portanto também muito importantes em criptografia.\\
+De forma a ser possível calcular os Símbolos de Jacobi e testar o programa para os \textit{inputs} dados foi desenvolvida em \textit{Sage} uma função recursiva que implementa as quatro propriedades pretendidas. Abaixo é apresentado o código desenvolvido:
+\begin{lstlisting}[style=sage]
+def jacobi(m,n):
+  if not is_odd(n):
+    print "n not odd"
+    return
+  if m == 0:
+    return 0
+  if m == 1:
+    return 1
+  #propriedade a)
+  if m>=n:
+    return jacobi(m%n, n)
+  #propriedade b)
+  if m == 2:
+    nm8 = n%8
+    if nm8 == 1.mod(8) or nm8 == (-1).mod(8):
+      return 1
+    elif nm8 == 3.mod(8) or nm8 == (-3).mod(8):
+      return -1
+  #propriedade c)
+  f = list(factor(m))
+  if len(f) == 2 and f[1][1] == 1 and f[0][0] == 2:
+    return ((jacobi(2, n)**f[0][1]))*jacobi(f[0][1], n)
+  if m%2 == 0:
+    return jacobi(2,n)*jacobi(m//2,n)
+  #propriedade d)
+  if m%4 == 3 and n%4 == 3 and is_odd(m):
+    return -jacobi(n,m)
+  if is_odd(m):
+    return jacobi(n,m)
+\end{lstlisting}
+Para os \textit{inputs} fornecidos, os resultados obtidos pelo programa desenvolvido são os seguintes:
+\begin{itemize}
+  \item $(\frac{610}{987}) = -1$
+  \item $(\frac{20694}{1987}) = 1$
+  \item $(\frac{1234567}{11111111}) = -1$
+\end{itemize}
+\section{Encontrar bases para as quais n é Pseudo-Primo de Euler}
+No último exercício do guião V pretende-se desenvolver um programa que encontre as bases b, para as quais n dado é um pseudo-primo de Euler. Para se determinar se n é um pseudo-primo  de Euler na base b, deve-se verificar se o Símbolo de Jacobi $(\frac{b}{n})$ é igual a $b^{(n-1)/2}$ (mod n). \\Desta forma a solução consiste em testar para sucessivos b se $(\frac{b}{n})$ é um Símbolo de Jacobi, se simultaneamente verifica a condição descrita e ainda se o máximo divisor comum entre b e n é igual a 1. De seguida apresenta-se o código desenvolvido que permite resolver o exercício:
+\begin{lstlisting}[style=sage]
+def eulerPseudoPrime(b,n):
+  j = jacobi(b, n) % n
+  p = pow(b, (n-1)//2) % n
+  if j == p and gcd(b,n) == 1: 
+    print (b,n), n, "is an euler pseudoprime to base", b
+    return true
+  else:
+    return false
+
+def eulerBase(n):
+  i = 2
+  ct = 0
+  while ct <= 5:
+    if eulerPseudoPrime(i,n):
+      ct += 1  
+    i += 1
+  return
+\end{lstlisting}
+Posto isto, os resultados obtidos foram os seguintes:
+\begin{itemize}
+  \item 837 é um Pseudo-Primo de Euler nas bases 836, 838, 1673, 1675, 2510, 2512.
+  \item 851 é um Pseudo-Primo de Euler nas bases 850, 852, 1071, 1703, 2552 e 2554.
+  \item 1189 é um Pseudo-Primo de Euler nas bases 204, 278, 360, 829, 911 e 985. 
+\end{itemize}
+De assinalar que optámos por apresentar apenas 5 bases para cada n dado, contudo existem muitas mais bases para as quais n é um Pseudo-Primo de Euler.

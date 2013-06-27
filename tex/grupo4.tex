@@ -1,0 +1,57 @@
+\chapter{Grupo IV}
+\section{Implementação}
+A implementação do CBC-MAC em \sage\ é bastante simples. Usa-se como função pseudo-aleatória a cifra por blocos AES, através da biblioteca \verb|pycrypto|. Vamos usar como valores \textit{default} chaves de $n = 128$ bits e $\ell(n) = 5$, ou seja, mensagens de comprimento $640$ bits ($80$ caractéres) divididas em blocos de $128$ bits ($16$ caractéres). Considerem-se a mensagem $m = m_1\ ||\ m_2\ ||\ \cdots\ ||\ m_{\ell(n)}$, com as \textit{tags} $t = t_1\ ||\ t_2\ ||\ \cdots\ ||\ t_{\ell(n)}$ ($\mathsf{Mac_k}(m)$ apenas retorna o bloco $t_{\ell(n)}$).
+%%%%% Return all blocks
+\section{Retornar todos os blocos}
+Retornar todos os blocos da \textit{tag} torna o CBC-MAC inseguro pois torna-se bastante fácil falsificar MAC's. Na imagem~\ref{img:cbcmac} é demonstrado o mecanismo de falsificação de MAC's para uma mensagem em que é criada uma mensagem falsa $m' =  (t_1 \oplus m_2)\ ||\ m_3\ ||\ \cdots\ ||\ m_\ell(n)\ ||\ (t_{\ell(n)} \oplus m_1)$. A \textit{tag} usada para verificação é apenas $t_{\ell(n)}$.
+\begin{figure}[h!]
+\centering
+  \input{img/cbcmac}
+  \caption{Falsificação de MAC's quando todos os blocos da \textit{tag} são retornados por \textsf{Mac}.}
+  \label{img:cbcmac}
+\end{figure}
+%
+%%%%%% Use random IV
+\section{Usar um \textsf{IV} aleatório}
+Usando um \textsf{IV} aleatório $iv$ ainda se torna mais fácil falsificar mensagens (sendo que \textsf{Mac} apenas retorna o último bloco como \textit{tag}). Basta para isso criar a nova mensagem $m' = (m_1 \oplus iv)\ ||\ m_2\ ||\ \cdots\ ||\ m_{\ell(n)}$ e a tag $t' = t$ tal que $\mathsf{Vrfy_k}(m', t') = \top$.
+\begin{figure}[h!]
+\centering
+  \input{img/randomiv}
+  \caption{Falsificação de MAC's quando se utiliza um \textsf{IV} aleatório.}
+  \label{img:randiv}
+\end{figure}
+%%%% exemplo ataque
+\section{Implementação e execução \sage}
+Depois de implementado o CBC-MAC, criaram-se dois métodos na classe \verb|CBCMAC| para falsificar mensagens:
+\begin{description}
+  \item[ForgeMacRandomIV(msg, tag, iv)] Retorna o par $(msg', tag)$
+  \item[ForgeMacAllTags(msg, tag)] Retorna o par $(msg', tag')$
+\end{description}
+Além disso, o método \textsf{Mac} tem uma variante insegura, bastante para isso incluir o argumento \verb|secure=False| na sua invocação.\\
+Segue-se o exemplo de uma sessão \sage\ em que se falsificam algumas mensagens.
+\begin{lstlisting}[style=Bash,caption=Exemplo de falsificação de MACs em \sage]
+sage: CBC = CBCMAC(128,5)
+sage: key = MyKey(length=128)
+sage: m = 'Isto e o CBC-MAC. Vamos forgar esta mensagem usando dois metodos. Wish me luck!!'
+sage: iv = randomIV()
+sage: t = CBC.Mac(key, m, iv=iv) # auth msg using random IV
+sage: (m2, t2) = CBC.ForgeMacRandomIV(m, t, iv) # forge new msg and tag
+sage: CBC.Vrfy(key, m, t, iv) # Vrfy using the random IV
+True
+sage: m2 ; CBC.Vrfy(key, m2, t2)
+'<\xd0w\xc2#\xc6\xdaa[\x8eH\x94\x0el0\xb2. Vamos forgar esta mensagem usando dois metodos. Wish me luck!!'
+True
+sage: CBC.Vrfy(key, m, t) # Vrfy using IV = 0
+False
+sage: (iv,t) = CBC.Mac(key, m, secure=False) # auth msg and return all blocks
+sage: (m3, t3) = CBC.ForgeMacAllTags(m, t) # forge new msg and tag
+sage: m3 ; CBC.Vrfy(key, m3, t3) # Vrfy new forged msg
+'\xad\x11q\xe0X IG\xf8\xd4\x1c\x10\x10\x85\xfaMsta mensagem usando dois metodos. Wish me luck!!\x0f\xdd0\x9fh=I\xdbB=\x8f"g\x88\x00\x96'
+True
+\end{lstlisting}
+%\begin{btSect}{bib/bibz04}
+% \section{Bibliografia}
+ %\btPrintCited
+ %\btPrintNotCited
+% \btPrintAll
+%\end{btSect}
